@@ -4,15 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Garden</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7f2;
+            color: #333;
+        }
+
+        header {
+            background: #3f6b3f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #3f6b3f;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #3f6b3f;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>🌱 My Garden</h1>
 
-    <p>My personal garden tracker.</p>
+    <header>
+        <h1>🌱 My Garden</h1>
+        <p>Garden Tracker</p>
+    </header>
 
-    <h2>2026 Garden</h2>
+    <nav>
+        <a href="#">Dashboard</a>
+        <a href="#">Plants</a>
+        <a href="#">Harvests</a>
+        <a href="#">Journal</a>
+        <a href="#">Garden</a>
+    </nav>
 
-    <p>We're just getting started!</p>
+    <main>
+
+        <section class="welcome">
+            <h2>Welcome to Your Garden</h2>
+            <p>
+                Keep track of what you're growing, when you planted it,
+                what you harvested, and what you learned each season.
+            </p>
+        </section>
+
+        <section class="dashboard">
+
+            <div class="card">
+                <h2>🌱 Plants</h2>
+                <p>0 plants currently being tracked.</p>
+            </div>
+
+            <div class="card">
+                <h2>🧺 Harvest</h2>
+                <p>0 harvests recorded this year.</p>
+            </div>
+
+            <div class="card">
+                <h2>📖 Journal</h2>
+                <p>0 garden notes recorded.</p>
+            </div>
+
+            <div class="card">
+                <h2>🌿 Garden</h2>
+                <p>Manage your garden beds and growing areas.</p>
+            </div>
+
+        </section>
+
+    </main>
+
 </body>
 </html>
