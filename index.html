@@ -78,15 +78,19 @@
         <p>Garden Tracker</p>
     </header>
 
-    <nav>
-        <a href="#">Dashboard</a>
-        <a href="#">Plants</a>
-        <a href="#">Harvests</a>
-        <a href="#">Journal</a>
-        <a href="#">Garden</a>
-    </nav>
+<nav>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('plants')">Plants</a>
+    <a href="#" onclick="showPage('harvests')">Harvests</a>
+    <a href="#" onclick="showPage('journal')">Journal</a>
+    <a href="#" onclick="showPage('garden')">Garden</a>
+</nav>
 
-    <main>
+<main>
+
+    <!-- DASHBOARD -->
+
+    <section id="dashboard" class="page">
 
         <section class="welcome">
             <h2>Welcome to Your Garden</h2>
@@ -120,7 +124,96 @@
 
         </section>
 
-    </main>
+    </section>
 
+
+    <!-- PLANTS -->
+
+    <section id="plants" class="page" style="display: none;">
+
+        <h2>🌱 Plants</h2>
+
+        <p>
+            This is where we'll keep track of everything you're growing.
+        </p>
+
+        <div class="card">
+
+            <h2>My Crops</h2>
+
+            <ul>
+                <li>🍅 Tomatoes</li>
+                <li>🌶️ Peppers</li>
+                <li>🥒 Cucumbers</li>
+                <li>🥕 Carrots</li>
+                <li>🥬 Lettuce</li>
+            </ul>
+
+        </div>
+
+    </section>
+
+
+    <!-- HARVESTS -->
+
+    <section id="harvests" class="page" style="display: none;">
+
+        <h2>🧺 Harvests</h2>
+
+        <div class="card">
+            <p>
+                Harvest tracking will go here.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- JOURNAL -->
+
+    <section id="journal" class="page" style="display: none;">
+
+        <h2>📖 Garden Journal</h2>
+
+        <div class="card">
+            <p>
+                Your garden notes and observations will go here.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- GARDEN -->
+
+    <section id="garden" class="page" style="display: none;">
+
+        <h2>🌿 My Garden</h2>
+
+        <div class="card">
+            <p>
+                Your garden beds and growing locations will go here.
+            </p>
+        </div>
+
+    </section>
+
+</main>
+    <script>
+
+    function showPage(pageName) {
+
+        // Hide every page
+        const pages = document.querySelectorAll('.page');
+
+        pages.forEach(function(page) {
+            page.style.display = 'none';
+        });
+
+        // Show the page we selected
+        document.getElementById(pageName).style.display = 'block';
+    }
+
+</script>
 </body>
 </html>
