@@ -70,13 +70,138 @@
 
 <section id="plants" class="page" style="display: none;">
 
-    <h2>🌱 Plant Library</h2>
+    <div class="page-header">
 
-    <p>
-        Browse the plants available in your garden library.
-    </p>
+        <div>
+            <h2>🌱 Plant Library</h2>
+
+            <p>
+                Browse your plants and varieties.
+            </p>
+        </div>
+
+        <button onclick="showAddPlantForm()">
+            + Add Plant
+        </button>
+
+    </div>
+
+
+    <input
+        type="search"
+        id="plantSearch"
+        placeholder="Search plants..."
+        oninput="displayPlantLibrary(this.value)"
+    >
+
 
     <div id="plantLibrary"></div>
+
+</section>
+
+<section id="addPlant" class="page" style="display: none;">
+
+    <button onclick="showPage('plants')">
+        ← Back to Plant Library
+    </button>
+
+    <h2>🌱 Add Plant</h2>
+
+    <div class="card">
+
+        <label for="newPlantCrop">
+            Crop
+        </label>
+
+        <input
+            type="text"
+            id="newPlantCrop"
+            placeholder="Example: Tomato"
+        >
+
+
+        <label for="newPlantVariety">
+            Variety
+        </label>
+
+        <input
+            type="text"
+            id="newPlantVariety"
+            placeholder="Example: Mountain Magic"
+        >
+
+
+        <label for="newPlantCategory">
+            Category
+        </label>
+
+        <select id="newPlantCategory">
+
+            <option value="Vegetable">
+                Vegetable
+            </option>
+
+            <option value="Fruit">
+                Fruit
+            </option>
+
+            <option value="Herb">
+                Herb
+            </option>
+
+            <option value="Flower">
+                Flower
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+
+        <label for="newPlantDaysMin">
+            Days to Maturity — Minimum
+        </label>
+
+        <input
+            type="number"
+            id="newPlantDaysMin"
+            min="1"
+        >
+
+
+        <label for="newPlantDaysMax">
+            Days to Maturity — Maximum
+        </label>
+
+        <input
+            type="number"
+            id="newPlantDaysMax"
+            min="1"
+        >
+
+
+        <label for="newPlantNotes">
+            Growing Notes
+        </label>
+
+        <textarea
+            id="newPlantNotes"
+            rows="5"
+            placeholder="Growing information..."
+        ></textarea>
+
+
+        <br>
+
+        <button onclick="addUserPlant()">
+            Add Plant
+        </button>
+
+        <p id="addPlantMessage"></p>
+
+    </div>
 
 </section>
 
