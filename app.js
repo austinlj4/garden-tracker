@@ -466,4 +466,44 @@ function loadPlantNotes(plantId) {
         notes;
 
 }
+function deleteUserPlant(plantId) {
+
+    const confirmed =
+        confirm(
+            'Are you sure you want to delete this plant?'
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const userPlants =
+        JSON.parse(localStorage.getItem('userPlants')) || [];
+
+    const updatedPlants =
+        userPlants.filter(function(plant) {
+            return plant.id !== plantId;
+        });
+
+    localStorage.setItem(
+        'userPlants',
+        JSON.stringify(updatedPlants)
+    );
+
+    // Remove any saved personal notes for this plant
+    const savedNotes =
+        JSON.parse(localStorage.getItem('plantNotes')) || {};
+
+    delete savedNotes[plantId];
+
+    localStorage.setItem(
+        'plantNotes',
+        JSON.stringify(savedNotes)
+    );
+
+    // Return to the library
+    displayPlantLibrary();
+
+    showPage('plants');
+}
 loadSettings();
