@@ -174,3 +174,10 @@ textarea {
 .delete-button:hover {
     background: #922f2f;
 }
+.delete-button {
+    background: #b33a3a;
+}
+
+.delete-button:hover {
+    background: #922f2f;
+}
