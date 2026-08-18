@@ -22,6 +22,7 @@
     <a href="#" onclick="showPage('harvests')">Harvests</a>
     <a href="#" onclick="showPage('journal')">Journal</a>
     <a href="#" onclick="showPage('garden')">Garden</a>
+    <a href="#" onclick="showPage('settings')">⚙️ Settings</a>
 </nav>
 
 <main>
@@ -137,6 +138,92 @@
     </section>
 
 </main>
+    
+    <!-- SETTINGS -->
+
+<section id="settings" class="page" style="display: none;">
+
+    <h2>⚙️ App Settings</h2>
+
+    <div class="card">
+
+        <h2>Growing Season</h2>
+
+        <label for="gardenYear">Garden Year</label>
+        <br>
+        <input type="number" id="gardenYear" min="2000" max="2100">
+
+        <br><br>
+
+        <label for="springFrost">Last Spring Frost</label>
+        <br>
+        <input type="date" id="springFrost">
+
+        <br><br>
+
+        <label for="fallFrost">First Fall Frost</label>
+        <br>
+        <input type="date" id="fallFrost">
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Units</h2>
+
+        <h3>Temperature</h3>
+
+        <label>
+            <input type="radio" name="temperatureUnit" value="F">
+            °F
+        </label>
+
+        <label>
+            <input type="radio" name="temperatureUnit" value="C">
+            °C
+        </label>
+
+
+        <h3>Weight</h3>
+
+        <label>
+            <input type="radio" name="weightUnit" value="oz">
+            oz / lb
+        </label>
+
+        <label>
+            <input type="radio" name="weightUnit" value="g">
+            g / kg
+        </label>
+
+
+        <h3>Length</h3>
+
+        <label>
+            <input type="radio" name="lengthUnit" value="in">
+            inches / feet
+        </label>
+
+        <label>
+            <input type="radio" name="lengthUnit" value="cm">
+            cm / meters
+        </label>
+
+    </div>
+
+
+    <div class="card">
+
+        <button onclick="saveSettings()">
+            Save Settings
+        </button>
+
+        <p id="settingsMessage"></p>
+
+    </div>
+
+</section>
     
 <script src="data/plants.js"></script>
 <script src="app.js"></script>
