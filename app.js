@@ -94,50 +94,245 @@ function loadSettings() {
     ).checked = true;
 
 }
-function displayPlantLibrary() {
+function displayPlantLibrary(searchTerm = "") {
 
     const libraryContainer =
         document.getElementById('plantLibrary');
 
     libraryContainer.innerHTML = '';
 
-    plantLibrary.forEach(function(plant) {
+    const search =
+        searchTerm.toLowerCase().trim();
 
-        const plantCard = document.createElement('div');
 
-        plantCard.className = 'card';
+    // Get the user-created plants
+    const userPlants =
+        JSON.parse(localStorage.getItem('userPlants')) || [];
 
-        plantCard.innerHTML = `
-            <h2>${plant.name}</h2>
 
-            <p>
-                <strong>Category:</strong>
-                ${plant.category}
-            </p>
+    // Combine built-in and user-created plants
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
 
-            <p>
-                <strong>Days to maturity:</strong>
-                ${plant.daysToMaturityMin}
-                –
-                ${plant.daysToMaturityMax} days
-            </p>
 
-            <p>
-                <strong>Sunlight:</strong>
-                ${plant.sunlight}
-            </p>
+    // Search
+    const filteredPlants =
+        allPlants.filter(function(plant) {
 
-            <button onclick="showPlantDetails('${plant.id}')">
-                View Plant
-            </button>
-        `;
+            return (
+                plant.name.toLowerCase().includes(search) ||
+                plant.crop.toLowerCase().includes(search) ||
+                (plant.variety &&
+                    plant.variety.toLowerCase().includes(search))
+            );
 
-        libraryContainer.appendChild(plantCard);
+        });
+
+
+    // Alphabetical sorting
+    filteredPlants.sort(function(a, b) {
+
+        return a.name.localeCompare(
+            b.name
+        );
 
     });
 
+
+    // Create the list
+    filteredPlants.forEach(function(plant) {
+
+        const plantItem =
+            document.createElement('div');
+
+        plantItem.className =
+            'plant-library-item';
+
+        plantItem.textContent =
+            plant.name;
+
+        plantItem.onclick = function() {
+
+            showPlantDetails(plant.id);
+
+        };
+
+        libraryContainer.appendChild(
+            plantItem
+        );
+
+    });
+
+
+    if (filteredPlants.length === 0) {
+
+        libraryContainer.innerHTML =
+            '<p>No plants found.</p>';
+
+    }
+
 }
 displayPlantLibrary();
+function showAddPlantForm() {
+
+    showPage('addPlant');
+
+}
+function addUserPlant() {
+
+    const crop =
+        document.getElementById(
+            'newPlantCrop'
+        ).value.trim();
+
+    const variety =
+        document.getElementById(
+            'newPlantVariety'
+        ).value.trim();
+
+    const category =
+        document.getElementById(
+            'newPlantCategory'
+        ).value;
+
+    const daysMin =
+        Number(
+            document.getElementById(
+                'newPlantDaysMin'
+            ).value
+        );
+
+    const daysMax =
+        Number(
+            document.getElementById(
+                'newPlantDaysMax'
+            ).value
+        );
+
+    const notes =
+        document.getElementById(
+            'newPlantNotes'
+        ).value.trim();
+
+
+    // Make sure a crop was entered
+    if (!crop) {
+
+        document.getElementById(
+            'addPlantMessage'
+        ).textContent =
+            'Please enter a crop name.';
+
+        return;
+
+    }
+
+
+    // Build the display name
+    let name = crop;
+
+    if (variety) {
+
+        name =
+            `${crop} — ${variety}`;
+
+    }
+
+
+    const newPlant = {
+
+        id:
+            'user-' +
+            Date.now(),
+
+        name: name,
+
+        crop: crop,
+
+        variety: variety,
+
+        category: category,
+
+        startIndoors: false,
+
+        weeksBeforeFrost: 0,
+
+        transplantAfterFrost: true,
+
+        directSow: true,
+
+        daysToMaturityMin: daysMin,
+
+        daysToMaturityMax: daysMax,
+
+        spacing: "",
+
+        sunlight: "",
+
+        notes: notes
+
+    };
+
+
+    // Get existing user plants
+    const userPlants =
+        JSON.parse(
+            localStorage.getItem(
+                'userPlants'
+            )
+        ) || [];
+
+
+    // Add the new plant
+    userPlants.push(newPlant);
+
+
+    // Save it
+    localStorage.setItem(
+        'userPlants',
+        JSON.stringify(userPlants)
+    );
+
+
+    // Clear the form
+    document.getElementById(
+        'newPlantCrop'
+    ).value = '';
+
+    document.getElementById(
+        'newPlantVariety'
+    ).value = '';
+
+    document.getElementById(
+        'newPlantDaysMin'
+    ).value = '';
+
+    document.getElementById(
+        'newPlantDaysMax'
+    ).value = '';
+
+    document.getElementById(
+        'newPlantNotes'
+    ).value = '';
+
+
+    document.getElementById(
+        'addPlantMessage'
+    ).textContent =
+        'Plant added!';
+
+
+    // Refresh the library
+    displayPlantLibrary();
+
+
+    // Return to library
+    showPage('plants');
+
+}
+
 function showPlantDetails(plantId) {
 
     const plant = plantLibrary.find(function(item) {
