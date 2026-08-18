@@ -94,4 +94,49 @@ function loadSettings() {
     ).checked = true;
 
 }
+function displayPlantLibrary() {
+
+    const libraryContainer =
+        document.getElementById('plantLibrary');
+
+    libraryContainer.innerHTML = '';
+
+    plantLibrary.forEach(function(plant) {
+
+        const plantCard = document.createElement('div');
+
+        plantCard.className = 'card';
+
+        plantCard.innerHTML = `
+            <h2>${plant.name}</h2>
+
+            <p>
+                <strong>Category:</strong>
+                ${plant.category}
+            </p>
+
+            <p>
+                <strong>Days to maturity:</strong>
+                ${plant.daysToMaturityMin}
+                –
+                ${plant.daysToMaturityMax} days
+            </p>
+
+            <p>
+                <strong>Spacing:</strong>
+                ${plant.spacing}
+            </p>
+
+            <p>
+                <strong>Sunlight:</strong>
+                ${plant.sunlight}
+            </p>
+        `;
+
+        libraryContainer.appendChild(plantCard);
+
+    });
+
+}
+displayPlantLibrary();
 loadSettings();
