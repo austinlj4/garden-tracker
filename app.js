@@ -114,6 +114,7 @@ function savePlantNotes(plantId) {
         'Notes saved!';
 
 }
+
 function loadPlantNotes(plantId) {
 
     const savedNotes =
@@ -124,7 +125,6 @@ function loadPlantNotes(plantId) {
 
     document.getElementById('personalPlantNotes').value =
         notes;
-
 }
 
 loadSettings();
