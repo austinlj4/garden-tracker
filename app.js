@@ -123,14 +123,13 @@ function displayPlantLibrary() {
             </p>
 
             <p>
-                <strong>Spacing:</strong>
-                ${plant.spacing}
-            </p>
-
-            <p>
                 <strong>Sunlight:</strong>
                 ${plant.sunlight}
             </p>
+
+            <button onclick="showPlantDetails('${plant.id}')">
+                View Plant
+            </button>
         `;
 
         libraryContainer.appendChild(plantCard);
@@ -139,4 +138,149 @@ function displayPlantLibrary() {
 
 }
 displayPlantLibrary();
+function showPlantDetails(plantId) {
+
+    const plant = plantLibrary.find(function(item) {
+        return item.id === plantId;
+    });
+
+    if (!plant) {
+        return;
+    }
+
+    const detailsContainer =
+        document.getElementById('plantDetailsContent');
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🌱 ${plant.name}</h2>
+
+            <p>
+                <strong>Category:</strong>
+                ${plant.category}
+            </p>
+
+            <h3>Growing Information</h3>
+
+            <p>
+                <strong>Days to maturity:</strong>
+                ${plant.daysToMaturityMin}
+                –
+                ${plant.daysToMaturityMax} days
+            </p>
+
+            <p>
+                <strong>Spacing:</strong>
+                ${plant.spacing}
+            </p>
+
+            <p>
+                <strong>Sunlight:</strong>
+                ${plant.sunlight}
+            </p>
+
+            <p>
+                <strong>Start indoors:</strong>
+                ${plant.startIndoors
+                    ? plant.weeksBeforeFrost + " weeks before last frost"
+                    : "Not normally needed"
+                }
+            </p>
+
+            <p>
+                <strong>Transplant:</strong>
+                ${plant.transplantAfterFrost
+                    ? "After last frost"
+                    : "Not normally needed"
+                }
+            </p>
+
+            <p>
+                <strong>Direct sow:</strong>
+                ${plant.directSow ? "Yes" : "No"}
+            </p>
+
+            <p>
+                ${plant.notes}
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📅 Your Growing Dates</h2>
+
+            <div id="plantDates">
+                Calculated dates will appear here.
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📝 Your Personal Notes</h2>
+
+            <p>
+                These notes are specific to your experience
+                growing this plant.
+            </p>
+
+            <textarea
+                id="personalPlantNotes"
+                rows="8"
+                placeholder="Example: Needs extra water. Don't plant on east side of garage."
+            ></textarea>
+
+            <br><br>
+
+            <button onclick="savePlantNotes('${plant.id}')">
+                Save Notes
+            </button>
+
+            <p id="plantNotesMessage"></p>
+
+        </div>
+
+    `;
+
+    loadPlantNotes(plant.id);
+
+    showPage('plantDetails');
+
+}
+function savePlantNotes(plantId) {
+
+    const notes =
+        document.getElementById('personalPlantNotes').value;
+
+    const savedNotes =
+        JSON.parse(localStorage.getItem('plantNotes')) || {};
+
+    savedNotes[plantId] = notes;
+
+    localStorage.setItem(
+        'plantNotes',
+        JSON.stringify(savedNotes)
+    );
+
+    document.getElementById('plantNotesMessage').textContent =
+        'Notes saved!';
+
+}
+function loadPlantNotes(plantId) {
+
+    const savedNotes =
+        JSON.parse(localStorage.getItem('plantNotes')) || {};
+
+    const notes =
+        savedNotes[plantId] || '';
+
+    document.getElementById('personalPlantNotes').value =
+        notes;
+
+}
 loadSettings();
