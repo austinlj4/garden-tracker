@@ -85,3 +85,4 @@ function loadSettings() {
     ).checked = true;
 
 }
+loadSettings();
