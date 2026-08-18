@@ -1,53 +1,77 @@
 const plantLibrary = [
 
     {
-        id: "tomato",
-        name: "Tomato",
+        id: "tomato-roma",
+        name: "Tomato — Roma",
+        crop: "Tomato",
+        variety: "Roma",
         category: "Vegetable",
 
         startIndoors: true,
         weeksBeforeFrost: 6,
-
         transplantAfterFrost: true,
         directSow: false,
 
-        daysToMaturityMin: 60,
+        daysToMaturityMin: 75,
         daysToMaturityMax: 80,
 
         spacing: "18–24 inches",
         sunlight: "Full sun",
 
-        notes: "Warm-season crop. Tomatoes grow best in warm soil and should be planted after the danger of frost has passed."
+        notes: "Good paste tomato. Produces elongated fruit suitable for sauces and canning."
     },
 
     {
-        id: "pepper",
-        name: "Pepper",
+        id: "tomato-super-sweet-100",
+        name: "Tomato — Super Sweet 100",
+        crop: "Tomato",
+        variety: "Super Sweet 100",
         category: "Vegetable",
 
         startIndoors: true,
-        weeksBeforeFrost: 8,
-
+        weeksBeforeFrost: 6,
         transplantAfterFrost: true,
         directSow: false,
 
         daysToMaturityMin: 60,
+        daysToMaturityMax: 70,
+
+        spacing: "18–24 inches",
+        sunlight: "Full sun",
+
+        notes: "Very productive cherry tomato producing clusters of very sweet fruit."
+    },
+
+    {
+        id: "pepper-cayenne",
+        name: "Pepper — Cayenne",
+        crop: "Pepper",
+        variety: "Cayenne",
+        category: "Vegetable",
+
+        startIndoors: true,
+        weeksBeforeFrost: 8,
+        transplantAfterFrost: true,
+        directSow: false,
+
+        daysToMaturityMin: 70,
         daysToMaturityMax: 90,
 
         spacing: "18–24 inches",
         sunlight: "Full sun",
 
-        notes: "Warm-season crop. Peppers prefer warm soil and should be transplanted after the danger of frost."
+        notes: "Hot pepper producing long, thin fruits."
     },
 
     {
         id: "cucumber",
         name: "Cucumber",
+        crop: "Cucumber",
+        variety: "",
         category: "Vegetable",
 
         startIndoors: false,
         weeksBeforeFrost: 0,
-
         transplantAfterFrost: true,
         directSow: true,
 
@@ -57,17 +81,18 @@ const plantLibrary = [
         spacing: "12–24 inches",
         sunlight: "Full sun",
 
-        notes: "Warm-season vine. Cucumbers can be started indoors, but direct sowing is often preferred."
+        notes: "Warm-season vine. Direct sowing is often preferred."
     },
 
     {
         id: "carrot",
         name: "Carrot",
+        crop: "Carrot",
+        variety: "",
         category: "Vegetable",
 
         startIndoors: false,
         weeksBeforeFrost: 0,
-
         transplantAfterFrost: false,
         directSow: true,
 
@@ -83,11 +108,12 @@ const plantLibrary = [
     {
         id: "lettuce",
         name: "Lettuce",
+        crop: "Lettuce",
+        variety: "",
         category: "Vegetable",
 
         startIndoors: true,
         weeksBeforeFrost: 4,
-
         transplantAfterFrost: false,
         directSow: true,
 
@@ -97,17 +123,18 @@ const plantLibrary = [
         spacing: "6–12 inches",
         sunlight: "Full sun / Partial shade",
 
-        notes: "Cool-season crop. Lettuce can be grown in spring and fall and may struggle during hot summer weather."
+        notes: "Cool-season crop. Can be grown in spring and fall."
     },
 
     {
         id: "basil",
         name: "Basil",
+        crop: "Basil",
+        variety: "",
         category: "Herb",
 
         startIndoors: true,
         weeksBeforeFrost: 4,
-
         transplantAfterFrost: true,
         directSow: true,
 
