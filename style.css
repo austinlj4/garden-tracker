@@ -90,14 +90,22 @@ label {
     font-weight: bold;
 }
 #plantLibrary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
+    width: 100%;
 }
 
-#plantLibrary .card {
-    margin: 0;
+.plant-library-item {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 18px;
 }
+
+.plant-library-item:hover {
+    background: #f0f4ed;
+}
+
 textarea {
     width: 100%;
     box-sizing: border-box;
@@ -117,6 +125,7 @@ textarea {
 #plantDetailsContent .card {
     margin: 0;
 }
+
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -132,17 +141,6 @@ textarea {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 6px;
-}
-
-.plant-library-item {
-    padding: 14px 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.plant-library-item:hover {
-    background: #f0f4ed;
 }
 
 #addPlant .card {
@@ -167,4 +165,12 @@ textarea {
 
 #addPlantMessage {
     font-weight: bold;
+}
+
+.delete-button {
+    background: #b33a3a;
+}
+
+.delete-button:hover {
+    background: #922f2f;
 }
