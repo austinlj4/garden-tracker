@@ -98,3 +98,22 @@ label {
 #plantLibrary .card {
     margin: 0;
 }
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+#plantDetailsContent {
+    display: grid;
+    gap: 15px;
+}
+
+#plantDetailsContent .card {
+    margin: 0;
+}
