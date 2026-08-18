@@ -335,7 +335,15 @@ function addUserPlant() {
 
 function showPlantDetails(plantId) {
 
-    const plant = plantLibrary.find(function(item) {
+    const userPlants =
+        JSON.parse(localStorage.getItem('userPlants')) || [];
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+    const plant = allPlants.find(function(item) {
         return item.id === plantId;
     });
 
@@ -357,72 +365,33 @@ function showPlantDetails(plantId) {
                 ${plant.category}
             </p>
 
-            <h3>Growing Information</h3>
-
             <p>
                 <strong>Days to maturity:</strong>
-                ${plant.daysToMaturityMin}
+                ${plant.daysToMaturityMin || 'Not specified'}
                 –
-                ${plant.daysToMaturityMax} days
+                ${plant.daysToMaturityMax || 'Not specified'}
+                days
             </p>
 
             <p>
                 <strong>Spacing:</strong>
-                ${plant.spacing}
+                ${plant.spacing || 'Not specified'}
             </p>
 
             <p>
                 <strong>Sunlight:</strong>
-                ${plant.sunlight}
+                ${plant.sunlight || 'Not specified'}
             </p>
 
             <p>
-                <strong>Start indoors:</strong>
-                ${plant.startIndoors
-                    ? plant.weeksBeforeFrost + " weeks before last frost"
-                    : "Not normally needed"
-                }
-            </p>
-
-            <p>
-                <strong>Transplant:</strong>
-                ${plant.transplantAfterFrost
-                    ? "After last frost"
-                    : "Not normally needed"
-                }
-            </p>
-
-            <p>
-                <strong>Direct sow:</strong>
-                ${plant.directSow ? "Yes" : "No"}
-            </p>
-
-            <p>
-                ${plant.notes}
+                ${plant.notes || ''}
             </p>
 
         </div>
-
-
-        <div class="card">
-
-            <h2>📅 Your Growing Dates</h2>
-
-            <div id="plantDates">
-                Calculated dates will appear here.
-            </div>
-
-        </div>
-
 
         <div class="card">
 
             <h2>📝 Your Personal Notes</h2>
-
-            <p>
-                These notes are specific to your experience
-                growing this plant.
-            </p>
 
             <textarea
                 id="personalPlantNotes"
@@ -440,12 +409,31 @@ function showPlantDetails(plantId) {
 
         </div>
 
+        ${
+            plant.id.startsWith('user-')
+            ? `
+                <div class="card">
+                    <button
+                        class="delete-button"
+                        onclick="deleteUserPlant('${plant.id}')"
+                    >
+                        Delete Plant
+                    </button>
+
+                    <p>
+                        This will permanently remove this
+                        custom plant from your library.
+                    </p>
+                </div>
+            `
+            : ''
+        }
+
     `;
 
     loadPlantNotes(plant.id);
 
     showPage('plantDetails');
-
 }
 function savePlantNotes(plantId) {
 
