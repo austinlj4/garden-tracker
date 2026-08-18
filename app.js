@@ -183,156 +183,191 @@ function showAddPlantForm() {
 function addUserPlant() {
 
     const crop =
-        document.getElementById(
-            'newPlantCrop'
-        ).value.trim();
+        document.getElementById('newPlantCrop').value.trim();
 
     const variety =
-        document.getElementById(
-            'newPlantVariety'
-        ).value.trim();
+        document.getElementById('newPlantVariety').value.trim();
 
     const category =
-        document.getElementById(
-            'newPlantCategory'
-        ).value;
+        document.getElementById('newPlantCategory').value;
 
     const daysMin =
         Number(
-            document.getElementById(
-                'newPlantDaysMin'
-            ).value
+            document.getElementById('newPlantDaysMin').value
         );
 
     const daysMax =
         Number(
-            document.getElementById(
-                'newPlantDaysMax'
-            ).value
+            document.getElementById('newPlantDaysMax').value
         );
 
     const notes =
-        document.getElementById(
-            'newPlantNotes'
-        ).value.trim();
+        document.getElementById('newPlantNotes').value.trim();
 
 
     // Make sure a crop was entered
     if (!crop) {
 
-        document.getElementById(
-            'addPlantMessage'
-        ).textContent =
+        document.getElementById('addPlantMessage').textContent =
             'Please enter a crop name.';
 
         return;
-
     }
 
 
-    // Build the display name
+    // Create the display name
     let name = crop;
 
     if (variety) {
+        name = `${crop} — ${variety}`;
+    }
 
-        name =
-            `${crop} — ${variety}`;
+
+    // Check whether we are editing an existing plant
+    const addPlantPage =
+        document.getElementById('addPlant');
+
+    const editingId =
+        addPlantPage.dataset.editingId;
+
+
+    // Get existing user-created plants
+    const userPlants =
+        JSON.parse(
+            localStorage.getItem('userPlants')
+        ) || [];
+
+
+    if (editingId) {
+
+        // -------------------------
+        // EDIT EXISTING PLANT
+        // -------------------------
+
+        const plantIndex =
+            userPlants.findIndex(function(plant) {
+                return plant.id === editingId;
+            });
+
+
+        if (plantIndex !== -1) {
+
+            // Keep existing information
+            // and update the fields from the form
+
+            userPlants[plantIndex] = {
+
+                ...userPlants[plantIndex],
+
+                name: name,
+
+                crop: crop,
+
+                variety: variety,
+
+                category: category,
+
+                daysToMaturityMin: daysMin,
+
+                daysToMaturityMax: daysMax,
+
+                notes: notes
+
+            };
+
+        }
+
+    } else {
+
+        // -------------------------
+        // CREATE NEW PLANT
+        // -------------------------
+
+        const newPlant = {
+
+            id:
+                'user-' + Date.now(),
+
+            name: name,
+
+            crop: crop,
+
+            variety: variety,
+
+            category: category,
+
+            startIndoors: false,
+
+            weeksBeforeFrost: 0,
+
+            transplantAfterFrost: true,
+
+            directSow: true,
+
+            daysToMaturityMin: daysMin,
+
+            daysToMaturityMax: daysMax,
+
+            spacing: "",
+
+            sunlight: "",
+
+            notes: notes
+
+        };
+
+
+        userPlants.push(newPlant);
 
     }
 
 
-    const newPlant = {
-
-        id:
-            'user-' +
-            Date.now(),
-
-        name: name,
-
-        crop: crop,
-
-        variety: variety,
-
-        category: category,
-
-        startIndoors: false,
-
-        weeksBeforeFrost: 0,
-
-        transplantAfterFrost: true,
-
-        directSow: true,
-
-        daysToMaturityMin: daysMin,
-
-        daysToMaturityMax: daysMax,
-
-        spacing: "",
-
-        sunlight: "",
-
-        notes: notes
-
-    };
-
-
-    // Get existing user plants
-    const userPlants =
-        JSON.parse(
-            localStorage.getItem(
-                'userPlants'
-            )
-        ) || [];
-
-
-    // Add the new plant
-    userPlants.push(newPlant);
-
-
-    // Save it
+    // Save the updated plant list
     localStorage.setItem(
         'userPlants',
         JSON.stringify(userPlants)
     );
 
 
+    // Leave editing mode
+    delete addPlantPage.dataset.editingId;
+
+
+    // Reset the page title
+    document.querySelector(
+        '#addPlant h2'
+    ).textContent = '🌱 Add Plant';
+
+
+    // Reset the button
+    document.querySelector(
+        '#addPlant button[onclick="addUserPlant()"]'
+    ).textContent = 'Add Plant';
+
+
     // Clear the form
-    document.getElementById(
-        'newPlantCrop'
-    ).value = '';
+    document.getElementById('newPlantCrop').value = '';
 
-    document.getElementById(
-        'newPlantVariety'
-    ).value = '';
+    document.getElementById('newPlantVariety').value = '';
 
-    document.getElementById(
-        'newPlantDaysMin'
-    ).value = '';
+    document.getElementById('newPlantDaysMin').value = '';
 
-    document.getElementById(
-        'newPlantDaysMax'
-    ).value = '';
+    document.getElementById('newPlantDaysMax').value = '';
 
-    document.getElementById(
-        'newPlantNotes'
-    ).value = '';
+    document.getElementById('newPlantNotes').value = '';
+
+    document.getElementById('addPlantMessage').textContent =
+        'Plant saved!';
 
 
-    document.getElementById(
-        'addPlantMessage'
-    ).textContent =
-        'Plant added!';
-
-
-    // Refresh the library
+    // Refresh the Plant Library
     displayPlantLibrary();
 
 
-    // Return to library
+    // Return to the Plant Library
     showPage('plants');
 
 }
-
 function showPlantDetails(plantId) {
 
     const userPlants =
@@ -409,25 +444,34 @@ function showPlantDetails(plantId) {
 
         </div>
 
-        ${
-            plant.id.startsWith('user-')
-            ? `
-                <div class="card">
-                    <button
-                        class="delete-button"
-                        onclick="deleteUserPlant('${plant.id}')"
-                    >
-                        Delete Plant
-                    </button>
+       ${
+    plant.id.startsWith('user-')
+    ? `
+        <div class="card">
 
-                    <p>
-                        This will permanently remove this
-                        custom plant from your library.
-                    </p>
-                </div>
-            `
-            : ''
-        }
+            <h3>Manage Plant</h3>
+
+            <button
+                onclick="editUserPlant('${plant.id}')"
+            >
+                Edit Plant
+            </button>
+
+            <button
+                class="delete-button"
+                onclick="deleteUserPlant('${plant.id}')"
+            >
+                Delete Plant
+            </button>
+
+            <p>
+                You can edit or remove this custom plant.
+            </p>
+
+        </div>
+    `
+    : ''
+}
 
     `;
 
@@ -506,4 +550,53 @@ function deleteUserPlant(plantId) {
 
     showPage('plants');
 }
+function editUserPlant(plantId) {
+
+    const userPlants =
+        JSON.parse(localStorage.getItem('userPlants')) || [];
+
+    const plant = userPlants.find(function(item) {
+        return item.id === plantId;
+    });
+
+    if (!plant) {
+        return;
+    }
+
+    // Fill the Add Plant form with the existing information
+
+    document.getElementById('newPlantCrop').value =
+        plant.crop;
+
+    document.getElementById('newPlantVariety').value =
+        plant.variety || '';
+
+    document.getElementById('newPlantCategory').value =
+        plant.category;
+
+    document.getElementById('newPlantDaysMin').value =
+        plant.daysToMaturityMin || '';
+
+    document.getElementById('newPlantDaysMax').value =
+        plant.daysToMaturityMax || '';
+
+    document.getElementById('newPlantNotes').value =
+        plant.notes || '';
+
+    // Remember which plant we're editing
+    document.getElementById('addPlant').dataset.editingId =
+        plantId;
+
+    // Change the page title
+    document.querySelector('#addPlant h2').textContent =
+        '✏️ Edit Plant';
+
+    // Change the button text
+    document.querySelector('#addPlant button[onclick="addUserPlant()"]')
+        .textContent = 'Save Changes';
+
+    showPage('addPlant');
+
+}
+
 loadSettings();
