@@ -481,6 +481,10 @@ function formatGardenDate(dateString) {
 
 }
  
+// ----------------------------------------
+// SHOW GARDEN PLANT DETAILS
+// ----------------------------------------
+
 function showGardenPlantDetails(gardenPlantId) {
 
     const gardenPlants =
@@ -507,6 +511,7 @@ function showGardenPlantDetails(gardenPlantId) {
     }
 
 
+    // Find the original plant
     const userPlants =
         getUserPlants();
 
@@ -554,6 +559,109 @@ function showGardenPlantDetails(gardenPlantId) {
     }
 
 
+    // Get harvests for this specific planting
+    const allHarvests =
+        getHarvests();
+
+
+    const plantHarvests =
+        allHarvests.filter(function(harvest) {
+
+            return harvest.gardenPlantId === gardenPlantId;
+
+        });
+
+
+    // Build harvest HTML
+    let harvestHTML = '';
+
+
+    if (plantHarvests.length === 0) {
+
+        harvestHTML = `
+            <p>
+                No harvests recorded for this planting yet.
+            </p>
+        `;
+
+    } else {
+
+        harvestHTML = `
+
+            <div class="harvest-list">
+
+        `;
+
+
+        plantHarvests.forEach(function(harvest) {
+
+            let amount = '';
+
+
+            if (
+                harvest.quantity !== null &&
+                harvest.quantity !== undefined
+            ) {
+
+                amount +=
+                    `${harvest.quantity} ${
+                        harvest.quantity === 1
+                            ? 'item'
+                            : 'items'
+                    }`;
+
+            }
+
+
+            if (
+                harvest.weight !== null &&
+                harvest.weight !== undefined
+            ) {
+
+                if (amount) {
+                    amount += ' • ';
+                }
+
+                amount +=
+                    `${harvest.weight} ${harvest.weightUnit}`;
+
+            }
+
+
+            harvestHTML += `
+
+                <div class="harvest-item">
+
+                    <strong>
+                        ${formatGardenDate(harvest.date)}
+                    </strong>
+
+                    <br>
+
+                    ${amount}
+
+                    ${
+                        harvest.notes
+                            ? `<br>${harvest.notes}`
+                            : ''
+                    }
+
+                </div>
+
+            `;
+
+        });
+
+
+        harvestHTML += `
+
+            </div>
+
+        `;
+
+    }
+
+
     detailsContainer.innerHTML = `
 
         <div class="card">
@@ -567,7 +675,13 @@ function showGardenPlantDetails(gardenPlantId) {
 
             <p>
                 <strong>Planting Date:</strong>
-                ${gardenPlant.plantingDate || 'Not specified'}
+                ${
+                    gardenPlant.plantingDate
+                        ? formatGardenDate(
+                            gardenPlant.plantingDate
+                        )
+                        : 'Not specified'
+                }
             </p>
 
             <p>
@@ -607,9 +721,9 @@ function showGardenPlantDetails(gardenPlantId) {
 
             <h3>🧺 Harvest</h3>
 
-            <p>
-                Harvest tracking will be added here.
-            </p>
+            ${harvestHTML}
+
+            <br>
 
             <button
                 onclick="showAddHarvest('${gardenPlant.id}')"
@@ -625,6 +739,7 @@ function showGardenPlantDetails(gardenPlantId) {
     showPage('gardenPlantDetails');
 
 }
+
 // ----------------------------------------
 // EDIT GARDEN PLANTING
 // ----------------------------------------
