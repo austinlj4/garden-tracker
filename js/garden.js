@@ -422,11 +422,3 @@ function formatGardenDate(dateString) {
 
 }
 
-
-// ----------------------------------------
-// INITIALIZE MY GARDEN
-// ----------------------------------------
-
-loadGardenYears();
-
-displayMyGarden();
