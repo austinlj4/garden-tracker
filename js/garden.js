@@ -752,3 +752,47 @@ function editGardenPlant(gardenPlantId) {
     showPage('addGardenPlant');
 
 }
+// ----------------------------------------
+// DELETE GARDEN PLANTING
+// ----------------------------------------
+
+function deleteGardenPlant(gardenPlantId) {
+
+    const confirmed =
+        confirm(
+            'Are you sure you want to remove this planting from your garden?'
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const garden =
+        getMyGarden();
+
+
+    const updatedGarden =
+        garden.filter(function(entry) {
+
+            return entry.id !== gardenPlantId;
+
+        });
+
+
+    saveMyGarden(updatedGarden);
+
+
+    // Refresh the year selector
+    loadGardenYears();
+
+
+    // Refresh the garden list
+    displayMyGarden();
+
+
+    // Return to My Garden
+    showPage('garden');
+
+}
