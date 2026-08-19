@@ -62,59 +62,67 @@ function displayMyGarden() {
     }
 
 
-    // Display each planting
-    yearPlants.forEach(function(entry) {
+// Display each planting
+yearPlants.forEach(function(entry) {
 
-        const plant =
-            allPlants.find(function(item) {
+    const plant =
+        allPlants.find(function(item) {
 
-                return item.id === entry.plantId;
+            return item.id === entry.plantId;
 
-            });
+        });
 
 
-        if (!plant) {
-            return;
+    if (!plant) {
+        return;
+    }
+
+
+    const gardenItem =
+        document.createElement('div');
+
+
+    gardenItem.className =
+        'garden-plant-item';
+
+
+    gardenItem.innerHTML = `
+
+        <strong>${plant.name}</strong>
+
+        <br>
+
+        ${entry.quantity}
+        ${entry.quantity === 1 ? 'plant' : 'plants'}
+
+        ${entry.plantingDate
+            ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
+            : ''
         }
 
+        ${entry.location
+            ? ` • ${entry.location}`
+            : ''
+        }
 
-        const gardenItem =
-            document.createElement('div');
-
-        gardenItem.className =
-            'plant-library-item';
-
-
-        gardenItem.innerHTML = `
-
-            <strong>${plant.name}</strong>
-
-            <br>
-
-            ${entry.quantity}
-            ${entry.quantity === 1 ? 'plant' : 'plants'}
-
-            ${entry.plantingDate
-                ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
-                : ''
-            }
-
-            ${entry.location
-                ? ` • ${entry.location}`
-                : ''
-            }
-
-        `;
+    `;
 
 
-        gardenContainer.appendChild(
-            gardenItem
+    // Make the entire planting clickable
+    gardenItem.onclick = function() {
+
+        showGardenPlantDetails(
+            entry.id
         );
 
-    });
+    };
 
-}
 
+    gardenContainer.appendChild(
+        gardenItem
+    );
+
+});
 
 // ----------------------------------------
 // CREATE YEAR DROPDOWN
