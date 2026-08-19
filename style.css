@@ -191,3 +191,11 @@ textarea {
 .garden-plant-item:hover {
     background: #f0f4ed;
 }
+.harvest-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.harvest-item:last-child {
+    border-bottom: none;
+}
