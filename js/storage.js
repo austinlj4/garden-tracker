@@ -69,3 +69,24 @@ function savePlantNotesData(notes) {
     );
 
 }
+// ========================================
+// MY GARDEN
+// ========================================
+
+function getMyGarden() {
+
+    return JSON.parse(
+        localStorage.getItem('myGarden')
+    ) || [];
+
+}
+
+
+function saveMyGarden(garden) {
+
+    localStorage.setItem(
+        'myGarden',
+        JSON.stringify(garden)
+    );
+
+}
