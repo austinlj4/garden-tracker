@@ -577,3 +577,147 @@ function showGardenPlantDetails(gardenPlantId) {
     showPage('gardenPlantDetails');
 
 }
+function showGardenPlantDetails(gardenPlantId) {
+
+    const gardenPlants =
+        getMyGarden();
+
+
+    const gardenPlant =
+        gardenPlants.find(function(entry) {
+
+            return entry.id === gardenPlantId;
+
+        });
+
+
+    if (!gardenPlant) {
+
+        console.error(
+            'Garden planting not found:',
+            gardenPlantId
+        );
+
+        return;
+
+    }
+
+
+    const userPlants =
+        getUserPlants();
+
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === gardenPlant.plantId;
+
+        });
+
+
+    if (!plant) {
+
+        console.error(
+            'Original plant not found:',
+            gardenPlant.plantId
+        );
+
+        return;
+
+    }
+
+
+    const detailsContainer =
+        document.getElementById(
+            'gardenPlantDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'gardenPlantDetailsContent not found.'
+        );
+
+        return;
+
+    }
+
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🌱 ${plant.name}</h2>
+
+            <p>
+                <strong>Quantity:</strong>
+                ${gardenPlant.quantity}
+            </p>
+
+            <p>
+                <strong>Planting Date:</strong>
+                ${gardenPlant.plantingDate || 'Not specified'}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                ${gardenPlant.location || 'Not specified'}
+            </p>
+
+            <p>
+                <strong>Notes:</strong>
+                ${gardenPlant.notes || 'None'}
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Garden Planting</h3>
+
+            <button
+                onclick="editGardenPlant('${gardenPlant.id}')"
+            >
+                ✏️ Edit Planting
+            </button>
+
+            <button
+                class="delete-button"
+                onclick="deleteGardenPlant('${gardenPlant.id}')"
+            >
+                🗑️ Remove From Garden
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>🧺 Harvest</h3>
+
+            <p>
+                Harvest tracking will be added here.
+            </p>
+
+            <button
+                onclick="showAddHarvest('${gardenPlant.id}')"
+            >
+                + Add Harvest
+            </button>
+
+        </div>
+
+    `;
+
+
+    showPage('gardenPlantDetails');
+
+}
