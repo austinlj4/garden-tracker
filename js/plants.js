@@ -3,7 +3,7 @@ function displayPlantLibrary(searchTerm = "") {
     const libraryContainer =
         document.getElementById('plantLibrary');
 
-    libraryContainer.innerHTML = '';
+    libraryContainer.innerHTMFL = '';
 
     const search =
         searchTerm.toLowerCase().trim();
@@ -272,25 +272,50 @@ function addUserPlant() {
 
 function showPlantDetails(plantId) {
 
-    const userPlants = getUserPlants();
+    const userPlants =
+        getUserPlants();
 
     const allPlants = [
         ...plantLibrary,
         ...userPlants
     ];
 
-    const plant = allPlants.find(function(item) {
-        return item.id === plantId;
-    });
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === plantId;
+
+        });
 
 
     if (!plant) {
+
+        console.error(
+            'Plant not found:',
+            plantId
+        );
+
         return;
+
     }
 
 
     const detailsContainer =
-        document.getElementById('plantDetailsContent');
+        document.getElementById(
+            'plantDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'plantDetailsContent was not found.'
+        );
+
+        return;
+
+    }
 
 
     detailsContainer.innerHTML = `
@@ -298,15 +323,16 @@ function showPlantDetails(plantId) {
         <div class="card">
 
             <h2>🌱 ${plant.name}</h2>
+
             <button
-    onclick="showAddGardenPlantForm('${plant.id}')"
->
-    Add to My Garden
-</button>
+                onclick="showAddGardenPlantForm('${plant.id}')"
+            >
+                Add to My Garden
+            </button>
 
             <p>
                 <strong>Category:</strong>
-                ${plant.category}
+                ${plant.category || 'Not specified'}
             </p>
 
             <p>
@@ -389,10 +415,10 @@ function showPlantDetails(plantId) {
 
     loadPlantNotes(plant.id);
 
+
     showPage('plantDetails');
 
 }
-
 
 function deleteUserPlant(plantId) {
 
