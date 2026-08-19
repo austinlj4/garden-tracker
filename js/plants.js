@@ -10,8 +10,7 @@ function displayPlantLibrary(searchTerm = "") {
 
 
     // Get the user-created plants
-    const userPlants =
-        JSON.parse(localStorage.getItem('userPlants')) || [];
+    const userPlants = getUserPlants();
 
 
     // Combine built-in and user-created plants
@@ -78,12 +77,18 @@ function displayPlantLibrary(searchTerm = "") {
     }
 
 }
+
+
 displayPlantLibrary();
+
+
 function showAddPlantForm() {
 
     showPage('addPlant');
 
 }
+
+
 function addUserPlant() {
 
     const crop =
@@ -136,10 +141,7 @@ function addUserPlant() {
 
 
     // Get existing user-created plants
-    const userPlants =
-        JSON.parse(
-            localStorage.getItem('userPlants')
-        ) || [];
+    const userPlants = getUserPlants();
 
 
     if (editingId) {
@@ -155,9 +157,6 @@ function addUserPlant() {
 
 
         if (plantIndex !== -1) {
-
-            // Keep existing information
-            // and update the fields from the form
 
             userPlants[plantIndex] = {
 
@@ -227,10 +226,7 @@ function addUserPlant() {
 
 
     // Save the updated plant list
-    localStorage.setItem(
-        'userPlants',
-        JSON.stringify(userPlants)
-    );
+    saveUserPlants(userPlants);
 
 
     // Leave editing mode
@@ -272,10 +268,11 @@ function addUserPlant() {
     showPage('plants');
 
 }
+
+
 function showPlantDetails(plantId) {
 
-    const userPlants =
-        JSON.parse(localStorage.getItem('userPlants')) || [];
+    const userPlants = getUserPlants();
 
     const allPlants = [
         ...plantLibrary,
@@ -286,12 +283,15 @@ function showPlantDetails(plantId) {
         return item.id === plantId;
     });
 
+
     if (!plant) {
         return;
     }
 
+
     const detailsContainer =
         document.getElementById('plantDetailsContent');
+
 
     detailsContainer.innerHTML = `
 
@@ -328,6 +328,7 @@ function showPlantDetails(plantId) {
 
         </div>
 
+
         <div class="card">
 
             <h2>📝 Your Personal Notes</h2>
@@ -348,41 +349,45 @@ function showPlantDetails(plantId) {
 
         </div>
 
-       ${
-    plant.id.startsWith('user-')
-    ? `
-        <div class="card">
 
-            <h3>Manage Plant</h3>
+        ${
+            plant.id.startsWith('user-')
+            ? `
+                <div class="card">
 
-            <button
-                onclick="editUserPlant('${plant.id}')"
-            >
-                Edit Plant
-            </button>
+                    <h3>Manage Plant</h3>
 
-            <button
-                class="delete-button"
-                onclick="deleteUserPlant('${plant.id}')"
-            >
-                Delete Plant
-            </button>
+                    <button
+                        onclick="editUserPlant('${plant.id}')"
+                    >
+                        Edit Plant
+                    </button>
 
-            <p>
-                You can edit or remove this custom plant.
-            </p>
+                    <button
+                        class="delete-button"
+                        onclick="deleteUserPlant('${plant.id}')"
+                    >
+                        Delete Plant
+                    </button>
 
-        </div>
-    `
-    : ''
-}
+                    <p>
+                        You can edit or remove this custom plant.
+                    </p>
+
+                </div>
+            `
+            : ''
+        }
 
     `;
+
 
     loadPlantNotes(plant.id);
 
     showPage('plantDetails');
+
 }
+
 
 function deleteUserPlant(plantId) {
 
@@ -391,53 +396,61 @@ function deleteUserPlant(plantId) {
             'Are you sure you want to delete this plant?'
         );
 
+
     if (!confirmed) {
         return;
     }
 
-    const userPlants =
-        JSON.parse(localStorage.getItem('userPlants')) || [];
 
+    // Get user-created plants
+    const userPlants = getUserPlants();
+
+
+    // Remove the selected plant
     const updatedPlants =
         userPlants.filter(function(plant) {
             return plant.id !== plantId;
         });
 
-    localStorage.setItem(
-        'userPlants',
-        JSON.stringify(updatedPlants)
-    );
+
+    // Save the updated list
+    saveUserPlants(updatedPlants);
+
 
     // Remove any saved personal notes for this plant
-    const savedNotes =
-        JSON.parse(localStorage.getItem('plantNotes')) || {};
+    const savedNotes = getPlantNotes();
 
     delete savedNotes[plantId];
 
-    localStorage.setItem(
-        'plantNotes',
-        JSON.stringify(savedNotes)
-    );
+    savePlantNotesData(savedNotes);
+
 
     // Return to the library
     displayPlantLibrary();
 
     showPage('plants');
+
 }
+
+
 function editUserPlant(plantId) {
 
-    const userPlants =
-        JSON.parse(localStorage.getItem('userPlants')) || [];
+    // Get user-created plants
+    const userPlants = getUserPlants();
 
-    const plant = userPlants.find(function(item) {
-        return item.id === plantId;
-    });
+
+    const plant =
+        userPlants.find(function(item) {
+            return item.id === plantId;
+        });
+
 
     if (!plant) {
         return;
     }
 
-    // Fill the Add Plant form with the existing information
+
+    // Fill the Add Plant form with existing information
 
     document.getElementById('newPlantCrop').value =
         plant.crop;
@@ -457,17 +470,25 @@ function editUserPlant(plantId) {
     document.getElementById('newPlantNotes').value =
         plant.notes || '';
 
+
     // Remember which plant we're editing
     document.getElementById('addPlant').dataset.editingId =
         plantId;
 
+
     // Change the page title
-    document.querySelector('#addPlant h2').textContent =
+    document.querySelector(
+        '#addPlant h2'
+    ).textContent =
         '✏️ Edit Plant';
 
+
     // Change the button text
-    document.querySelector('#addPlant button[onclick="addUserPlant()"]')
-        .textContent = 'Save Changes';
+    document.querySelector(
+        '#addPlant button[onclick="addUserPlant()"]'
+    ).textContent =
+        'Save Changes';
+
 
     showPage('addPlant');
 
