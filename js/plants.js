@@ -298,6 +298,11 @@ function showPlantDetails(plantId) {
         <div class="card">
 
             <h2>🌱 ${plant.name}</h2>
+            <button
+    onclick="showAddGardenPlantForm('${plant.id}')"
+>
+    Add to My Garden
+</button>
 
             <p>
                 <strong>Category:</strong>
