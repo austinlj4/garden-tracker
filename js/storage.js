@@ -90,3 +90,24 @@ function saveMyGarden(garden) {
     );
 
 }
+// ========================================
+// HARVESTS
+// ========================================
+
+function getHarvests() {
+
+    return JSON.parse(
+        localStorage.getItem('harvests')
+    ) || [];
+
+}
+
+
+function saveHarvests(harvests) {
+
+    localStorage.setItem(
+        'harvests',
+        JSON.stringify(harvests)
+    );
+
+}
