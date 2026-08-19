@@ -428,6 +428,16 @@ if (editingId) {
     // Save garden
     saveMyGarden(garden);
 
+    // Clear editing mode
+delete form.dataset.editingId;
+
+
+// Reset button text
+document.querySelector(
+    '#addGardenPlant button[onclick="addGardenPlant()"]'
+).textContent =
+    'Add to My Garden';
+
 
     // Update the year dropdown
     loadGardenYears();
