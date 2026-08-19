@@ -62,60 +62,69 @@ function displayMyGarden() {
     }
 
 
-    // Display each planting
-    yearPlants.forEach(function(entry) {
+// Display each planting
+yearPlants.forEach(function(entry) {
 
-        const plant =
-            allPlants.find(function(item) {
+    const plant =
+        allPlants.find(function(item) {
 
-                return item.id === entry.plantId;
+            return item.id === entry.plantId;
 
-            });
+        });
 
 
-        if (!plant) {
-            return;
+    if (!plant) {
+        return;
+    }
+
+
+    const gardenItem =
+        document.createElement('div');
+
+
+    gardenItem.className =
+        'garden-plant-item';
+
+
+    gardenItem.innerHTML = `
+
+        <strong>${plant.name}</strong>
+
+        <br>
+
+        ${entry.quantity}
+        ${entry.quantity === 1 ? 'plant' : 'plants'}
+
+        ${entry.plantingDate
+            ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
+            : ''
         }
 
+        ${entry.location
+            ? ` • ${entry.location}`
+            : ''
+        }
 
-        const gardenItem =
-            document.createElement('div');
-
-        gardenItem.className =
-            'plant-library-item';
-
-
-        gardenItem.innerHTML = `
-
-            <strong>${plant.name}</strong>
-
-            <br>
-
-            ${entry.quantity}
-            ${entry.quantity === 1 ? 'plant' : 'plants'}
-
-            ${entry.plantingDate
-                ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
-                : ''
-            }
-
-            ${entry.location
-                ? ` • ${entry.location}`
-                : ''
-            }
-
-        `;
+    `;
 
 
-        gardenContainer.appendChild(
-            gardenItem
+    // Make the entire planting clickable
+    gardenItem.onclick = function() {
+
+        showGardenPlantDetails(
+            entry.id
         );
 
-    });
+    };
+
+
+    gardenContainer.appendChild(
+        gardenItem
+    );
+
+});
 
 }
-
-
 // ----------------------------------------
 // CREATE YEAR DROPDOWN
 // ----------------------------------------
@@ -340,12 +349,52 @@ function addGardenPlant() {
     }
 
 
-    // Get existing garden entries
-    const garden =
-        getMyGarden();
+// Get existing garden entries
+const garden =
+    getMyGarden();
 
 
-    // Create a new garden entry
+// Check whether we are editing
+const editingId =
+    form.dataset.editingId;
+
+
+if (editingId) {
+
+    // --------------------------------
+    // EDIT EXISTING GARDEN PLANTING
+    // --------------------------------
+
+    const gardenIndex =
+        garden.findIndex(function(entry) {
+
+            return entry.id === editingId;
+
+        });
+
+
+    if (gardenIndex !== -1) {
+
+        garden[gardenIndex].quantity =
+            quantity;
+
+        garden[gardenIndex].plantingDate =
+            plantingDate;
+
+        garden[gardenIndex].location =
+            location;
+
+        garden[gardenIndex].notes =
+            notes;
+
+    }
+
+} else {
+
+    // --------------------------------
+    // CREATE NEW GARDEN PLANTING
+    // --------------------------------
+
     const newEntry = {
 
         id:
@@ -372,12 +421,22 @@ function addGardenPlant() {
     };
 
 
-    // Add it to the garden
     garden.push(newEntry);
 
+}
 
     // Save garden
     saveMyGarden(garden);
+
+    // Clear editing mode
+delete form.dataset.editingId;
+
+
+// Reset button text
+document.querySelector(
+    '#addGardenPlant button[onclick="addGardenPlant()"]'
+).textContent =
+    'Add to My Garden';
 
 
     // Update the year dropdown
@@ -421,4 +480,319 @@ function formatGardenDate(dateString) {
     );
 
 }
+ 
+function showGardenPlantDetails(gardenPlantId) {
 
+    const gardenPlants =
+        getMyGarden();
+
+
+    const gardenPlant =
+        gardenPlants.find(function(entry) {
+
+            return entry.id === gardenPlantId;
+
+        });
+
+
+    if (!gardenPlant) {
+
+        console.error(
+            'Garden planting not found:',
+            gardenPlantId
+        );
+
+        return;
+
+    }
+
+
+    const userPlants =
+        getUserPlants();
+
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === gardenPlant.plantId;
+
+        });
+
+
+    if (!plant) {
+
+        console.error(
+            'Original plant not found:',
+            gardenPlant.plantId
+        );
+
+        return;
+
+    }
+
+
+    const detailsContainer =
+        document.getElementById(
+            'gardenPlantDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'gardenPlantDetailsContent not found.'
+        );
+
+        return;
+
+    }
+
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🌱 ${plant.name}</h2>
+
+            <p>
+                <strong>Quantity:</strong>
+                ${gardenPlant.quantity}
+            </p>
+
+            <p>
+                <strong>Planting Date:</strong>
+                ${gardenPlant.plantingDate || 'Not specified'}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                ${gardenPlant.location || 'Not specified'}
+            </p>
+
+            <p>
+                <strong>Notes:</strong>
+                ${gardenPlant.notes || 'None'}
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Garden Planting</h3>
+
+            <button
+                onclick="editGardenPlant('${gardenPlant.id}')"
+            >
+                ✏️ Edit Planting
+            </button>
+
+            <button
+                class="delete-button"
+                onclick="deleteGardenPlant('${gardenPlant.id}')"
+            >
+                🗑️ Remove From Garden
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>🧺 Harvest</h3>
+
+            <p>
+                Harvest tracking will be added here.
+            </p>
+
+            <button
+                onclick="showAddHarvest('${gardenPlant.id}')"
+            >
+                + Add Harvest
+            </button>
+
+        </div>
+
+    `;
+
+
+    showPage('gardenPlantDetails');
+
+}
+// ----------------------------------------
+// EDIT GARDEN PLANTING
+// ----------------------------------------
+
+function editGardenPlant(gardenPlantId) {
+
+    const garden =
+        getMyGarden();
+
+
+    const gardenPlant =
+        garden.find(function(entry) {
+
+            return entry.id === gardenPlantId;
+
+        });
+
+
+    if (!gardenPlant) {
+
+        console.error(
+            'Garden planting not found:',
+            gardenPlantId
+        );
+
+        return;
+
+    }
+
+
+    // Find the original plant
+    const userPlants =
+        getUserPlants();
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === gardenPlant.plantId;
+
+        });
+
+
+    if (!plant) {
+
+        console.error(
+            'Original plant not found:',
+            gardenPlant.plantId
+        );
+
+        return;
+
+    }
+
+
+    // Fill in the form
+    document.getElementById(
+        'gardenPlantName'
+    ).textContent = plant.name;
+
+
+    document.getElementById(
+        'gardenQuantity'
+    ).value =
+        gardenPlant.quantity;
+
+
+    document.getElementById(
+        'gardenPlantingDate'
+    ).value =
+        gardenPlant.plantingDate || '';
+
+
+    document.getElementById(
+        'gardenLocation'
+    ).value =
+        gardenPlant.location || '';
+
+
+    document.getElementById(
+        'gardenPlantingNotes'
+    ).value =
+        gardenPlant.notes || '';
+
+
+    // Remember which garden planting we're editing
+    document.getElementById(
+        'addGardenPlant'
+    ).dataset.editingId =
+        gardenPlantId;
+
+
+    // Keep the original plant and year
+    document.getElementById(
+        'addGardenPlant'
+    ).dataset.plantId =
+        gardenPlant.plantId;
+
+
+    document.getElementById(
+        'addGardenPlant'
+    ).dataset.gardenYear =
+        gardenPlant.gardenYear;
+
+
+    // Change button text
+    document.querySelector(
+        '#addGardenPlant button[onclick="addGardenPlant()"]'
+    ).textContent =
+        'Save Changes';
+
+
+    // Clear message
+    document.getElementById(
+        'gardenPlantMessage'
+    ).textContent = '';
+
+
+    // Open the form
+    showPage('addGardenPlant');
+
+}
+// ----------------------------------------
+// DELETE GARDEN PLANTING
+// ----------------------------------------
+
+function deleteGardenPlant(gardenPlantId) {
+
+    const confirmed =
+        confirm(
+            'Are you sure you want to remove this planting from your garden?'
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const garden =
+        getMyGarden();
+
+
+    const updatedGarden =
+        garden.filter(function(entry) {
+
+            return entry.id !== gardenPlantId;
+
+        });
+
+
+    saveMyGarden(updatedGarden);
+
+
+    // Refresh the year selector
+    loadGardenYears();
+
+
+    // Refresh the garden list
+    displayMyGarden();
+
+
+    // Return to My Garden
+    showPage('garden');
+
+}

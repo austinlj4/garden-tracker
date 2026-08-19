@@ -181,3 +181,13 @@ textarea {
 .delete-button:hover {
     background: #922f2f;
 }
+.garden-plant-item {
+    padding: 14px 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.garden-plant-item:hover {
+    background: #f0f4ed;
+}
