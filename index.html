@@ -205,7 +205,93 @@
 
 </section>
 
+<div id="garden" class="page">
 
+    <div class="page-header">
+
+        <h2>🌱 My Garden</h2>
+
+        <select id="gardenYearSelector"
+                onchange="displayMyGarden()">
+        </select>
+
+    </div>
+
+    <div id="myGardenList">
+    </div>
+
+</div>
+
+    <div id="addGardenPlant" class="page">
+
+    <div class="page-header">
+
+        <h2>🌱 Add to My Garden</h2>
+
+    </div>
+
+    <div class="card">
+
+        <h3 id="gardenPlantName">
+            Plant
+        </h3>
+
+        <label for="gardenQuantity">
+            Quantity
+        </label>
+
+        <input
+            type="number"
+            id="gardenQuantity"
+            min="1"
+            value="1"
+        >
+
+        <label for="gardenPlantingDate">
+            Planting Date
+        </label>
+
+        <input
+            type="date"
+            id="gardenPlantingDate"
+        >
+
+        <label for="gardenLocation">
+            Location
+        </label>
+
+        <input
+            type="text"
+            id="gardenLocation"
+            placeholder="Example: East bed"
+        >
+
+        <label for="gardenPlantingNotes">
+            Notes
+        </label>
+
+        <textarea
+            id="gardenPlantingNotes"
+            rows="5"
+            placeholder="Optional notes about this planting"
+        ></textarea>
+
+        <br><br>
+
+        <button onclick="addGardenPlant()">
+            Add to My Garden
+        </button>
+
+        <button onclick="showPage('plants')">
+            Cancel
+        </button>
+
+        <p id="gardenPlantMessage"></p>
+
+    </div>
+
+</div>
+    
 <!-- PLANT DETAILS -->
 
 <section id="plantDetails" class="page" style="display: none;">
