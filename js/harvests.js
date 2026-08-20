@@ -252,4 +252,132 @@ function addHarvest() {
     }, 500);
 
 }
+// ----------------------------------------
+// SHOW HARVEST DETAILS
+// ----------------------------------------
 
+function showHarvestDetails(harvestId) {
+
+    const harvests =
+        getHarvests();
+
+
+    const harvest =
+        harvests.find(function(item) {
+
+            return item.id === harvestId;
+
+        });
+
+
+    if (!harvest) {
+
+        console.error(
+            'Harvest not found:',
+            harvestId
+        );
+
+        return;
+
+    }
+
+
+    const detailsContainer =
+        document.getElementById(
+            'harvestDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'harvestDetailsContent not found.'
+        );
+
+        return;
+
+    }
+
+
+    let amount = '';
+
+
+    if (
+        harvest.quantity !== null &&
+        harvest.quantity !== undefined
+    ) {
+
+        amount +=
+            `${harvest.quantity} ${
+                harvest.quantity === 1
+                    ? 'item'
+                    : 'items'
+            }`;
+
+    }
+
+
+    if (
+        harvest.weight !== null &&
+        harvest.weight !== undefined
+    ) {
+
+        if (amount) {
+            amount += ' • ';
+        }
+
+        amount +=
+            `${harvest.weight} ${harvest.weightUnit}`;
+
+    }
+
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🧺 Harvest</h2>
+
+            <p>
+                <strong>Date:</strong>
+                ${formatGardenDate(harvest.date)}
+            </p>
+
+            <p>
+                <strong>Amount:</strong>
+                ${amount}
+            </p>
+
+            <p>
+                <strong>Notes:</strong>
+                ${harvest.notes || 'None'}
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Manage Harvest</h3>
+
+            <button
+                onclick="editHarvest('${harvest.id}')"
+            >
+                ✏️ Edit Harvest
+            </button>
+
+            <button
+                class="delete-button"
+                onclick="deleteHarvest('${harvest.id}')"
+            >
+                🗑️ Delete Harvest
+            </button>
+
+        </div>
+
+    `;
+
+
+    showPage('harvestDetails');
+
+}
