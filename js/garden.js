@@ -51,6 +51,11 @@ function displayMyGarden() {
     ];
 
 
+    // Get all harvest records
+    const harvests =
+        getHarvests();
+
+
     // No plants for this year
     if (yearPlants.length === 0) {
 
@@ -62,69 +67,167 @@ function displayMyGarden() {
     }
 
 
-// Display each planting
-yearPlants.forEach(function(entry) {
+    // Display each planting
+    yearPlants.forEach(function(entry) {
 
-    const plant =
-        allPlants.find(function(item) {
+        const plant =
+            allPlants.find(function(item) {
 
-            return item.id === entry.plantId;
+                return item.id === entry.plantId;
+
+            });
+
+
+        if (!plant) {
+            return;
+        }
+
+
+        // ----------------------------------------
+        // CALCULATE HARVEST TOTALS
+        // ----------------------------------------
+
+        const plantingHarvests =
+            harvests.filter(function(harvest) {
+
+                return harvest.gardenPlantId === entry.id;
+
+            });
+
+
+        let totalQuantity = 0;
+        let quantityUnit = '';
+
+        let totalWeight = 0;
+        let weightUnit = '';
+
+
+        plantingHarvests.forEach(function(harvest) {
+
+            // Add quantity
+            if (harvest.quantity) {
+
+                totalQuantity +=
+                    Number(harvest.quantity);
+
+                if (harvest.quantityUnit) {
+                    quantityUnit =
+                        harvest.quantityUnit;
+                }
+
+            }
+
+
+            // Add weight
+            if (harvest.weight) {
+
+                totalWeight +=
+                    Number(harvest.weight);
+
+                if (harvest.weightUnit) {
+                    weightUnit =
+                        harvest.weightUnit;
+                }
+
+            }
 
         });
 
 
-    if (!plant) {
-        return;
-    }
+        // ----------------------------------------
+        // BUILD HARVEST DISPLAY
+        // ----------------------------------------
+
+        let harvestText =
+            'No harvest recorded';
 
 
-    const gardenItem =
-        document.createElement('div');
+        if (totalQuantity > 0 || totalWeight > 0) {
+
+            const harvestParts = [];
 
 
-    gardenItem.className =
-        'garden-plant-item';
+            if (totalQuantity > 0) {
+
+                harvestParts.push(
+                    `${totalQuantity} ${quantityUnit || 'items'}`
+                );
+
+            }
 
 
-    gardenItem.innerHTML = `
+            if (totalWeight > 0) {
 
-        <strong>${plant.name}</strong>
+                harvestParts.push(
+                    `${totalWeight} ${weightUnit || 'oz'}`
+                );
 
-        <br>
+            }
 
-        ${entry.quantity}
-        ${entry.quantity === 1 ? 'plant' : 'plants'}
 
-        ${entry.plantingDate
-            ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
-            : ''
+            harvestText =
+                'Harvest: ' +
+                harvestParts.join(' • ');
+
         }
 
-        ${entry.location
-            ? ` • ${entry.location}`
-            : ''
-        }
 
-    `;
+        // ----------------------------------------
+        // CREATE GARDEN ITEM
+        // ----------------------------------------
+
+        const gardenItem =
+            document.createElement('div');
 
 
-    // Make the entire planting clickable
-    gardenItem.onclick = function() {
+        gardenItem.className =
+            'garden-plant-item';
 
-        showGardenPlantDetails(
-            entry.id
+
+        gardenItem.innerHTML = `
+
+            <strong>${plant.name}</strong>
+
+            <br>
+
+            ${entry.quantity}
+            ${entry.quantity === 1 ? 'plant' : 'plants'}
+
+            ${entry.plantingDate
+                ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
+                : ''
+            }
+
+            ${entry.location
+                ? ` • ${entry.location}`
+                : ''
+            }
+
+            <br>
+
+            <strong>${harvestText}</strong>
+
+        `;
+
+
+        // Make the entire planting clickable
+        gardenItem.onclick = function() {
+
+            showGardenPlantDetails(
+                entry.id
+            );
+
+        };
+
+
+        gardenContainer.appendChild(
+            gardenItem
         );
 
-    };
-
-
-    gardenContainer.appendChild(
-        gardenItem
-    );
-
-});
+    });
 
 }
+
 // ----------------------------------------
 // CREATE YEAR DROPDOWN
 // ----------------------------------------
