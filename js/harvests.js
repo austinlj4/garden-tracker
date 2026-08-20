@@ -821,3 +821,75 @@ function displayHarvestSummary() {
     });
 
 }
+// ========================================
+// HARVEST YEARS
+// ========================================
+
+function loadHarvestYears() {
+
+    const selector =
+        document.getElementById(
+            'harvestYearSelector'
+        );
+
+
+    if (!selector) {
+        return;
+    }
+
+
+    const currentYear =
+        new Date().getFullYear();
+
+
+    const harvests =
+        getHarvests();
+
+
+    const years =
+        harvests.map(function(harvest) {
+
+            return harvest.gardenYear;
+
+        });
+
+
+    // Always include current year
+    years.push(currentYear);
+
+
+    // Remove duplicates and sort newest first
+    const uniqueYears =
+        [...new Set(years)].sort(function(a, b) {
+
+            return b - a;
+
+        });
+
+
+    selector.innerHTML = '';
+
+
+    uniqueYears.forEach(function(year) {
+
+        const option =
+            document.createElement('option');
+
+
+        option.value = year;
+
+        option.textContent = year;
+
+
+        selector.appendChild(option);
+
+    });
+
+
+    selector.value =
+        currentYear;
+
+
+    displayHarvestSummary();
+
+}
