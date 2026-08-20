@@ -606,3 +606,218 @@ function deleteHarvest(harvestId) {
     );
 
 }
+
+// ========================================
+// HARVEST SUMMARY
+// ========================================
+
+function displayHarvestSummary() {
+
+    const container =
+        document.getElementById('harvestSummaryList');
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = '';
+
+
+    // Get selected year
+    const selector =
+        document.getElementById(
+            'harvestYearSelector'
+        );
+
+
+    const selectedYear =
+        Number(selector.value);
+
+
+    // Get all harvests
+    const harvests =
+        getHarvests();
+
+
+    // Get plants
+    const userPlants =
+        getUserPlants();
+
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    // Only use harvests from selected year
+    const yearHarvests =
+        harvests.filter(function(harvest) {
+
+            return harvest.gardenYear === selectedYear;
+
+        });
+
+
+    if (yearHarvests.length === 0) {
+
+        container.innerHTML =
+            '<p>No harvests recorded for this year.</p>';
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // GROUP HARVESTS BY PLANT
+    // ----------------------------------------
+
+    const plantTotals = {};
+
+
+    yearHarvests.forEach(function(harvest) {
+
+        const plantId =
+            harvest.plantId;
+
+
+        if (!plantTotals[plantId]) {
+
+            plantTotals[plantId] = {
+
+                quantity: 0,
+
+                weight: 0,
+
+                hasQuantity: false,
+
+                hasWeight: false,
+
+                weightUnit:
+                    harvest.weightUnit || 'oz'
+
+            };
+
+        }
+
+
+        // Add quantity
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined
+        ) {
+
+            plantTotals[plantId].quantity +=
+                Number(harvest.quantity);
+
+            plantTotals[plantId].hasQuantity = true;
+
+        }
+
+
+        // Add weight
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined
+        ) {
+
+            plantTotals[plantId].weight +=
+                Number(harvest.weight);
+
+            plantTotals[plantId].hasWeight = true;
+
+        }
+
+
+        // Remember weight unit
+        if (harvest.weightUnit) {
+
+            plantTotals[plantId].weightUnit =
+                harvest.weightUnit;
+
+        }
+
+    });
+
+
+    // ----------------------------------------
+    // DISPLAY EACH PLANT
+    // ----------------------------------------
+
+    Object.keys(plantTotals).forEach(function(plantId) {
+
+        const plant =
+            allPlants.find(function(item) {
+
+                return item.id === plantId;
+
+            });
+
+
+        if (!plant) {
+            return;
+        }
+
+
+        const totals =
+            plantTotals[plantId];
+
+
+        const card =
+            document.createElement('div');
+
+
+        card.className =
+            'card';
+
+
+        let amount = '';
+
+
+        // Quantity
+        if (totals.hasQuantity) {
+
+            amount +=
+                `${totals.quantity} ${
+                    totals.quantity === 1
+                        ? 'item'
+                        : 'items'
+                }`;
+
+        }
+
+
+        // Weight
+        if (totals.hasWeight) {
+
+            if (amount) {
+                amount += ' • ';
+            }
+
+
+            amount +=
+                `${totals.weight} ${totals.weightUnit}`;
+
+        }
+
+
+        card.innerHTML = `
+
+            <h2>🌱 ${plant.name}</h2>
+
+            <p>
+                <strong>Total Harvest:</strong>
+                ${amount}
+            </p>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
