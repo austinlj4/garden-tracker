@@ -207,6 +207,7 @@ textarea {
     font-weight: bold;
     text-decoration: underline;
     cursor: pointer;
+    color: inherit;
 }
 
 .harvest-date-button:hover {
