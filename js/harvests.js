@@ -3,7 +3,7 @@
 // ========================================
 
 // ----------------------------------------
-// DISPLAY HARVESTS
+// DISPLAY HARVEST TOTALS
 // ----------------------------------------
 
 function displayHarvests() {
@@ -26,12 +26,15 @@ function displayHarvests() {
     const selectedYear =
         Number(yearSelector.value);
 
+
+    // Get only harvests from selected year
     const yearHarvests =
         harvests.filter(function(harvest) {
 
             return harvest.gardenYear === selectedYear;
 
         });
+
 
     if (yearHarvests.length === 0) {
 
@@ -42,76 +45,135 @@ function displayHarvests() {
 
     }
 
+
+    // Get all plants
+    const userPlants =
+        getUserPlants();
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    // ----------------------------------------
+    // GROUP HARVESTS BY PLANT
+    // ----------------------------------------
+
+    const plantTotals = {};
+
+
     yearHarvests.forEach(function(harvest) {
 
-        const garden =
-            getMyGarden();
+        const plantId =
+            harvest.plantId;
 
-        const gardenPlant =
-            garden.find(function(entry) {
 
-                return entry.id === harvest.gardenPlantId;
+        if (!plantTotals[plantId]) {
 
-            });
+            plantTotals[plantId] = {
 
-        if (!gardenPlant) {
-            return;
+                quantity: 0,
+
+                weight: 0,
+
+                hasWeight: false,
+
+                weightUnit:
+                    harvest.weightUnit || 'oz'
+
+            };
+
         }
 
-        const userPlants =
-            getUserPlants();
 
-        const allPlants = [
-            ...plantLibrary,
-            ...userPlants
-        ];
-
-        const plant =
-            allPlants.find(function(item) {
-
-                return item.id === gardenPlant.plantId;
-
-            });
-
-        if (!plant) {
-            return;
-        }
-
-        let amount = '';
-
+        // Add quantity
         if (
             harvest.quantity !== null &&
             harvest.quantity !== undefined
         ) {
 
+            plantTotals[plantId].quantity +=
+                Number(harvest.quantity);
+
+        }
+
+
+        // Add weight
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined
+        ) {
+
+            plantTotals[plantId].weight +=
+                Number(harvest.weight);
+
+            plantTotals[plantId].hasWeight = true;
+
+        }
+
+    });
+
+
+    // ----------------------------------------
+    // DISPLAY TOTALS
+    // ----------------------------------------
+
+    Object.keys(plantTotals).forEach(function(plantId) {
+
+        const plant =
+            allPlants.find(function(item) {
+
+                return item.id === plantId;
+
+            });
+
+
+        if (!plant) {
+            return;
+        }
+
+
+        const totals =
+            plantTotals[plantId];
+
+
+        let amount = '';
+
+
+        // Quantity total
+        if (totals.quantity > 0) {
+
             amount +=
-                `${harvest.quantity} ${
-                    harvest.quantity === 1
+                `${totals.quantity} ${
+                    totals.quantity === 1
                         ? 'item'
                         : 'items'
                 }`;
 
         }
 
-        if (
-            harvest.weight !== null &&
-            harvest.weight !== undefined
-        ) {
+
+        // Weight total
+        if (totals.hasWeight) {
 
             if (amount) {
                 amount += ' • ';
             }
 
             amount +=
-                `${harvest.weight} ${harvest.weightUnit}`;
+                `${totals.weight} ${totals.weightUnit}`;
 
         }
+
 
         const harvestItem =
             document.createElement('div');
 
+
         harvestItem.className =
             'garden-plant-item';
+
 
         harvestItem.innerHTML = `
 
@@ -119,19 +181,10 @@ function displayHarvests() {
 
             <br>
 
-            ${formatGardenDate(harvest.date)}
-
-            • ${amount}
+            ${amount}
 
         `;
 
-        harvestItem.onclick = function() {
-
-            showHarvestDetails(
-                harvest.id
-            );
-
-        };
 
         container.appendChild(
             harvestItem
