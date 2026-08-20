@@ -12,7 +12,6 @@ function showAddHarvest(gardenPlantId) {
     const gardenPlants =
         getMyGarden();
 
-
     const gardenPlant =
         gardenPlants.find(function(entry) {
 
@@ -33,20 +32,41 @@ function showAddHarvest(gardenPlantId) {
     }
 
 
-    // Store the garden planting ID
-    document.getElementById(
-        'addHarvest'
-    ).dataset.gardenPlantId =
+    const form =
+        document.getElementById('addHarvest');
+
+
+    // Store which garden planting this harvest belongs to
+    form.dataset.gardenPlantId =
         gardenPlantId;
 
 
-    // Clear the form
+    // Make sure we are NOT in edit mode
+    delete form.dataset.editingId;
+
+
+    // Reset the page title
+    document.querySelector(
+        '#addHarvest h2'
+    ).textContent =
+        '🧺 Add Harvest';
+
+
+    // Reset the button
+    document.querySelector(
+        '#addHarvest button[onclick="addHarvest()"]'
+    ).textContent =
+        'Save Harvest';
+
+
+    // Set today's date
     document.getElementById(
         'harvestDate'
     ).value =
         new Date().toISOString().split('T')[0];
 
 
+    // Clear the form
     document.getElementById(
         'harvestQuantity'
     ).value = '';
@@ -65,6 +85,104 @@ function showAddHarvest(gardenPlantId) {
     document.getElementById(
         'harvestNotes'
     ).value = '';
+
+
+    document.getElementById(
+        'harvestMessage'
+    ).textContent = '';
+
+
+    showPage('addHarvest');
+
+}
+
+// ----------------------------------------
+// EDIT HARVEST
+// ----------------------------------------
+
+function editHarvest(harvestId) {
+
+    const harvests =
+        getHarvests();
+
+
+    const harvest =
+        harvests.find(function(item) {
+
+            return item.id === harvestId;
+
+        });
+
+
+    if (!harvest) {
+
+        console.error(
+            'Harvest not found:',
+            harvestId
+        );
+
+        return;
+
+    }
+
+
+    const form =
+        document.getElementById('addHarvest');
+
+
+    // Remember which harvest we are editing
+    form.dataset.editingId =
+        harvestId;
+
+
+    // Remember the garden planting
+    form.dataset.gardenPlantId =
+        harvest.gardenPlantId;
+
+
+    // Fill the form
+    document.getElementById(
+        'harvestDate'
+    ).value =
+        harvest.date || '';
+
+
+    document.getElementById(
+        'harvestQuantity'
+    ).value =
+        harvest.quantity ?? '';
+
+
+    document.getElementById(
+        'harvestWeight'
+    ).value =
+        harvest.weight ?? '';
+
+
+    document.getElementById(
+        'harvestWeightUnit'
+    ).value =
+        harvest.weightUnit || 'oz';
+
+
+    document.getElementById(
+        'harvestNotes'
+    ).value =
+        harvest.notes || '';
+
+
+    // Change title
+    document.querySelector(
+        '#addHarvest h2'
+    ).textContent =
+        '✏️ Edit Harvest';
+
+
+    // Change button
+    document.querySelector(
+        '#addHarvest button[onclick="addHarvest()"]'
+    ).textContent =
+        'Save Changes';
 
 
     document.getElementById(
@@ -192,7 +310,54 @@ function addHarvest() {
         getHarvests();
 
 
-    // Create the harvest record
+// Check whether we are editing
+const editingId =
+    form.dataset.editingId;
+
+
+if (editingId) {
+
+    // ----------------------------------------
+    // EDIT EXISTING HARVEST
+    // ----------------------------------------
+
+    const harvestIndex =
+        harvests.findIndex(function(item) {
+
+            return item.id === editingId;
+
+        });
+
+
+    if (harvestIndex !== -1) {
+
+        harvests[harvestIndex] = {
+
+            ...harvests[harvestIndex],
+
+            date: date,
+
+            quantity: quantity,
+
+            weight: weight,
+
+            weightUnit:
+                weight !== null
+                    ? weightUnit
+                    : '',
+
+            notes: notes
+
+        };
+
+    }
+
+} else {
+
+    // ----------------------------------------
+    // CREATE NEW HARVEST
+    // ----------------------------------------
+
     const newHarvest = {
 
         id:
@@ -227,10 +392,9 @@ function addHarvest() {
     };
 
 
-    // Add the new harvest
     harvests.push(newHarvest);
 
-
+}
     // Save harvests
     saveHarvests(harvests);
 
