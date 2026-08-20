@@ -545,3 +545,64 @@ function showHarvestDetails(harvestId) {
     showPage('harvestDetails');
 
 }
+// ----------------------------------------
+// DELETE HARVEST
+// ----------------------------------------
+
+function deleteHarvest(harvestId) {
+
+    const confirmed =
+        confirm(
+            'Are you sure you want to delete this harvest?'
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const harvests =
+        getHarvests();
+
+
+    // Find the harvest before removing it
+    const harvest =
+        harvests.find(function(item) {
+
+            return item.id === harvestId;
+
+        });
+
+
+    if (!harvest) {
+
+        console.error(
+            'Harvest not found:',
+            harvestId
+        );
+
+        return;
+
+    }
+
+
+    // Remove the harvest
+    const updatedHarvests =
+        harvests.filter(function(item) {
+
+            return item.id !== harvestId;
+
+        });
+
+
+    // Save the updated harvest list
+    saveHarvests(updatedHarvests);
+
+
+    // Return to the garden planting
+    showGardenPlantDetails(
+        harvest.gardenPlantId
+    );
+
+}
