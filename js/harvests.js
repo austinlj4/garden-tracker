@@ -2,7 +2,144 @@
 // HARVESTS
 // ========================================
 
+// ----------------------------------------
+// DISPLAY HARVESTS
+// ----------------------------------------
 
+function displayHarvests() {
+
+    const container =
+        document.getElementById('harvestList');
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = '';
+
+    const harvests =
+        getHarvests();
+
+    const yearSelector =
+        document.getElementById('harvestYearSelector');
+
+    const selectedYear =
+        Number(yearSelector.value);
+
+    const yearHarvests =
+        harvests.filter(function(harvest) {
+
+            return harvest.gardenYear === selectedYear;
+
+        });
+
+    if (yearHarvests.length === 0) {
+
+        container.innerHTML =
+            '<p>No harvests recorded for this year.</p>';
+
+        return;
+
+    }
+
+    yearHarvests.forEach(function(harvest) {
+
+        const garden =
+            getMyGarden();
+
+        const gardenPlant =
+            garden.find(function(entry) {
+
+                return entry.id === harvest.gardenPlantId;
+
+            });
+
+        if (!gardenPlant) {
+            return;
+        }
+
+        const userPlants =
+            getUserPlants();
+
+        const allPlants = [
+            ...plantLibrary,
+            ...userPlants
+        ];
+
+        const plant =
+            allPlants.find(function(item) {
+
+                return item.id === gardenPlant.plantId;
+
+            });
+
+        if (!plant) {
+            return;
+        }
+
+        let amount = '';
+
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined
+        ) {
+
+            amount +=
+                `${harvest.quantity} ${
+                    harvest.quantity === 1
+                        ? 'item'
+                        : 'items'
+                }`;
+
+        }
+
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined
+        ) {
+
+            if (amount) {
+                amount += ' • ';
+            }
+
+            amount +=
+                `${harvest.weight} ${harvest.weightUnit}`;
+
+        }
+
+        const harvestItem =
+            document.createElement('div');
+
+        harvestItem.className =
+            'garden-plant-item';
+
+        harvestItem.innerHTML = `
+
+            <strong>${plant.name}</strong>
+
+            <br>
+
+            ${formatGardenDate(harvest.date)}
+
+            • ${amount}
+
+        `;
+
+        harvestItem.onclick = function() {
+
+            showHarvestDetails(
+                harvest.id
+            );
+
+        };
+
+        container.appendChild(
+            harvestItem
+        );
+
+    });
+
+}
 // ----------------------------------------
 // SHOW ADD HARVEST FORM
 // ----------------------------------------
