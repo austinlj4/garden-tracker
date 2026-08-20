@@ -447,17 +447,28 @@
     
     <!-- HARVESTS -->
 
-    <section id="harvests" class="page" style="display: none;">
+<section id="harvests" class="page" style="display: none;">
 
-        <h2>🧺 Harvests</h2>
+    <div class="page-header">
 
-        <div class="card">
+        <div>
+            <h2>🧺 Harvests</h2>
+
             <p>
-                Harvest tracking will go here.
+                See your total harvest for each plant.
             </p>
         </div>
 
-    </section>
+        <select
+            id="harvestYearSelector"
+            onchange="displayHarvestSummary()">
+        </select>
+
+    </div>
+
+    <div id="harvestSummaryList"></div>
+
+</section>
 
 
     <!-- JOURNAL -->
