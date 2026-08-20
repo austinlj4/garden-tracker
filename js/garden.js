@@ -632,9 +632,12 @@ function showGardenPlantDetails(gardenPlantId) {
 
                 <div class="harvest-item">
 
-                    <strong>
+                    <button
+                            class="harvest-date-button"
+                            onclick="showHarvestDetails('${harvest.id}')"
+                    >
                         ${formatGardenDate(harvest.date)}
-                    </strong>
+                    </button>
 
                     <br>
 
