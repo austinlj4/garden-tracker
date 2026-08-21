@@ -1014,7 +1014,16 @@ function showHarvestDetails(harvestId) {
         </div>
 
     `;
+    
+document.getElementById(
+    'backToGardenPlantButton'
+).onclick = function() {
 
+    showGardenPlantDetails(
+        harvest.gardenPlantId
+    );
+
+};
 
     showPage('harvestDetails');
 
