@@ -276,6 +276,181 @@ function showHarvestPlantDetails(plantId, year) {
         return;
 
     }
+        // ----------------------------------------
+    // CALCULATE TOTALS
+    // ----------------------------------------
+
+    let totalQuantity = 0;
+
+    let totalWeight = 0;
+
+    let hasWeight = false;
+
+
+    yearHarvests.forEach(function(harvest) {
+
+        // Add quantity
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined &&
+            harvest.quantity !== ''
+        ) {
+
+            totalQuantity +=
+                Number(harvest.quantity);
+
+        }
+
+
+        // Add weight
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined &&
+            harvest.weight !== ''
+        ) {
+
+            totalWeight +=
+                Number(harvest.weight);
+
+            hasWeight = true;
+
+        }
+
+    });
+
+
+    // ----------------------------------------
+    // BUILD TOTAL DISPLAY
+    // ----------------------------------------
+
+    let totalAmount = '';
+
+
+    if (totalQuantity > 0) {
+
+        totalAmount =
+            `Qty: ${totalQuantity}`;
+
+    }
+
+
+    if (hasWeight) {
+
+        if (totalAmount) {
+            totalAmount += ' • ';
+        }
+
+        totalAmount +=
+            `Lbs: ${totalWeight}`;
+
+    }
+
+
+    // ----------------------------------------
+    // BUILD INDIVIDUAL HARVEST LIST
+    // ----------------------------------------
+
+    let harvestList = '';
+
+
+    yearHarvests.forEach(function(harvest) {
+
+        let amount = '';
+
+
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined &&
+            harvest.quantity !== ''
+        ) {
+
+            amount +=
+                `Qty: ${harvest.quantity}`;
+
+        }
+
+
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined &&
+            harvest.weight !== ''
+        ) {
+
+            if (amount) {
+                amount += ' • ';
+            }
+
+            amount +=
+                `Lbs: ${harvest.weight}`;
+
+        }
+
+
+        harvestList += `
+
+            <div
+                class="garden-plant-item"
+                onclick="showHarvestDetails('${harvest.id}')"
+            >
+
+                <strong>
+                    ${formatGardenDate(harvest.date)}
+                </strong>
+
+                <br>
+
+                ${amount}
+
+                ${
+                    harvest.notes
+                        ? `<br><small>${harvest.notes}</small>`
+                        : ''
+                }
+
+            </div>
+
+        `;
+
+    });
+
+
+    // ----------------------------------------
+    // DISPLAY DETAILS PAGE
+    // ----------------------------------------
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🧺 ${plant.name}</h2>
+
+            <h3>
+                ${year} Harvest Total
+            </h3>
+
+            <p>
+                <strong>
+                    ${totalAmount || 'No harvest recorded'}
+                </strong>
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Individual Harvests</h3>
+
+            ${harvestList}
+
+        </div>
+
+    `;
+
+
+    showPage('harvestPlantDetails');
+
+}
 // ----------------------------------------
 // SHOW ADD HARVEST FORM
 // ----------------------------------------
