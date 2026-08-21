@@ -111,3 +111,148 @@ function saveHarvests(harvests) {
     );
 
 }
+// ========================================
+// HARVEST CALCULATIONS
+// ========================================
+
+
+// Get all harvests for a specific year
+function getHarvestsForYear(year) {
+
+    const harvests =
+        getHarvests();
+
+    return harvests.filter(function(harvest) {
+
+        return harvest.gardenYear === Number(year);
+
+    });
+
+}
+
+
+// Get all harvests for a specific plant and year
+function getHarvestsForPlant(
+    plantId,
+    year
+) {
+
+    const harvests =
+        getHarvestsForYear(year);
+
+    return harvests.filter(function(harvest) {
+
+        return harvest.plantId === plantId;
+
+    });
+
+}
+
+
+// Get total quantity for a plant in a year
+function getHarvestQuantityForPlant(
+    plantId,
+    year
+) {
+
+    const harvests =
+        getHarvestsForPlant(
+            plantId,
+            year
+        );
+
+
+    return harvests.reduce(
+        function(total, harvest) {
+
+            return total +
+                (harvest.quantity || 0);
+
+        },
+        0
+    );
+
+}
+
+
+// Get total weight for a plant in a year
+function getHarvestWeightForPlant(
+    plantId,
+    year
+) {
+
+    const harvests =
+        getHarvestsForPlant(
+            plantId,
+            year
+        );
+
+
+    return harvests.reduce(
+        function(total, harvest) {
+
+            let weight =
+                harvest.weight || 0;
+
+
+            // Convert weight to pounds
+            if (harvest.weightUnit === 'oz') {
+
+                weight =
+                    weight / 16;
+
+            }
+
+
+            return total + weight;
+
+        },
+        0
+    );
+
+}
+// Format harvest weight for display
+function formatHarvestWeight(
+    weight,
+    unit
+) {
+
+    if (
+        weight === null ||
+        weight === undefined ||
+        weight === ''
+    ) {
+
+        return '';
+
+    }
+
+
+    let pounds =
+        Number(weight);
+
+
+    // Convert ounces to pounds
+    if (unit === 'oz') {
+
+        pounds =
+            pounds / 16;
+
+    }
+
+
+    // Under 1 pound → display ounces
+    if (pounds < 1) {
+
+        const ounces =
+            pounds * 16;
+
+        return `${Math.round(ounces * 10) / 10} oz`;
+
+    }
+
+
+    // 1 pound or more → display pounds
+    return `${Math.round(pounds * 10) / 10} lb`;
+
+}
