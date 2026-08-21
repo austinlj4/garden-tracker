@@ -179,7 +179,7 @@ if (
             }
 
 amount +=
-    `Lbs: ${Math.round(totals.weight * 10) / 10}`;
+    `${Math.round(totals.weight * 10) / 10} lbs`;
 
         }
 
@@ -364,7 +364,7 @@ totalWeight +=
         }
 
 totalAmount +=
-    `Lbs: ${Math.round(totalWeight * 10) / 10}`;
+    `${Math.round(totalWeight * 10) / 10} lbs`;
 
     }
 
