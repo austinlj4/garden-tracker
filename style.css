@@ -191,3 +191,25 @@ textarea {
 .garden-plant-item:hover {
     background: #f0f4ed;
 }
+.harvest-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.harvest-item:last-child {
+    border-bottom: none;
+}
+.harvest-date-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    color: inherit;
+}
+
+.harvest-date-button:hover {
+    opacity: 0.7;
+}

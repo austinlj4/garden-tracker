@@ -30,5 +30,10 @@ function showPage(pageId) {
         displayMyGarden();
 
     }
+if (pageId === 'harvests') {
 
+    loadHarvestYears();
+    displayHarvests();
+
+}
 }

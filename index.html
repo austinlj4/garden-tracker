@@ -433,21 +433,43 @@
 
 </section>
     
+    <!-- HARVEST DETAILS -->
+
+<section id="harvestDetails" class="page" style="display: none;">
+
+    <button onclick="showPage('gardenPlantDetails')">
+        ← Back to Garden Plant
+    </button>
+
+    <div id="harvestDetailsContent"></div>
+
+</section>
+    
     <!-- HARVESTS -->
 
-    <section id="harvests" class="page" style="display: none;">
+<section id="harvests" class="page" style="display: none;">
 
-        <h2>🧺 Harvests</h2>
+    <div class="page-header">
 
-        <div class="card">
+        <div>
+            <h2>🧺 Harvests</h2>
+
             <p>
-                Harvest tracking will go here.
+                Track everything you harvest from your garden.
             </p>
         </div>
 
-    </section>
+        <select
+            id="harvestYearSelector"
+            onchange="displayHarvests()">
+        </select>
 
+    </div>
 
+    <div id="harvestList"></div>
+
+</section>
+    
     <!-- JOURNAL -->
 
     <section id="journal" class="page" style="display: none;">

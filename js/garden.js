@@ -51,6 +51,11 @@ function displayMyGarden() {
     ];
 
 
+    // Get all harvest records
+    const harvests =
+        getHarvests();
+
+
     // No plants for this year
     if (yearPlants.length === 0) {
 
@@ -62,69 +67,167 @@ function displayMyGarden() {
     }
 
 
-// Display each planting
-yearPlants.forEach(function(entry) {
+    // Display each planting
+    yearPlants.forEach(function(entry) {
 
-    const plant =
-        allPlants.find(function(item) {
+        const plant =
+            allPlants.find(function(item) {
 
-            return item.id === entry.plantId;
+                return item.id === entry.plantId;
+
+            });
+
+
+        if (!plant) {
+            return;
+        }
+
+
+        // ----------------------------------------
+        // CALCULATE HARVEST TOTALS
+        // ----------------------------------------
+
+        const plantingHarvests =
+            harvests.filter(function(harvest) {
+
+                return harvest.gardenPlantId === entry.id;
+
+            });
+
+
+        let totalQuantity = 0;
+        let quantityUnit = '';
+
+        let totalWeight = 0;
+        let weightUnit = '';
+
+
+        plantingHarvests.forEach(function(harvest) {
+
+            // Add quantity
+            if (harvest.quantity) {
+
+                totalQuantity +=
+                    Number(harvest.quantity);
+
+                if (harvest.quantityUnit) {
+                    quantityUnit =
+                        harvest.quantityUnit;
+                }
+
+            }
+
+
+            // Add weight
+            if (harvest.weight) {
+
+                totalWeight +=
+                    Number(harvest.weight);
+
+                if (harvest.weightUnit) {
+                    weightUnit =
+                        harvest.weightUnit;
+                }
+
+            }
 
         });
 
 
-    if (!plant) {
-        return;
-    }
+        // ----------------------------------------
+        // BUILD HARVEST DISPLAY
+        // ----------------------------------------
+
+        let harvestText =
+            'No harvest recorded';
 
 
-    const gardenItem =
-        document.createElement('div');
+        if (totalQuantity > 0 || totalWeight > 0) {
+
+            const harvestParts = [];
 
 
-    gardenItem.className =
-        'garden-plant-item';
+            if (totalQuantity > 0) {
+
+                harvestParts.push(
+                    `${totalQuantity} ${quantityUnit || 'items'}`
+                );
+
+            }
 
 
-    gardenItem.innerHTML = `
+            if (totalWeight > 0) {
 
-        <strong>${plant.name}</strong>
+                harvestParts.push(
+                    `${totalWeight} ${weightUnit || 'oz'}`
+                );
 
-        <br>
+            }
 
-        ${entry.quantity}
-        ${entry.quantity === 1 ? 'plant' : 'plants'}
 
-        ${entry.plantingDate
-            ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
-            : ''
+            harvestText =
+                'Harvest: ' +
+                harvestParts.join(' • ');
+
         }
 
-        ${entry.location
-            ? ` • ${entry.location}`
-            : ''
-        }
 
-    `;
+        // ----------------------------------------
+        // CREATE GARDEN ITEM
+        // ----------------------------------------
+
+        const gardenItem =
+            document.createElement('div');
 
 
-    // Make the entire planting clickable
-    gardenItem.onclick = function() {
+        gardenItem.className =
+            'garden-plant-item';
 
-        showGardenPlantDetails(
-            entry.id
+
+        gardenItem.innerHTML = `
+
+            <strong>${plant.name}</strong>
+
+            <br>
+
+            ${entry.quantity}
+            ${entry.quantity === 1 ? 'plant' : 'plants'}
+
+            ${entry.plantingDate
+                ? ` • Planted ${formatGardenDate(entry.plantingDate)}`
+                : ''
+            }
+
+            ${entry.location
+                ? ` • ${entry.location}`
+                : ''
+            }
+
+            <br>
+
+            <strong>${harvestText}</strong>
+
+        `;
+
+
+        // Make the entire planting clickable
+        gardenItem.onclick = function() {
+
+            showGardenPlantDetails(
+                entry.id
+            );
+
+        };
+
+
+        gardenContainer.appendChild(
+            gardenItem
         );
 
-    };
-
-
-    gardenContainer.appendChild(
-        gardenItem
-    );
-
-});
+    });
 
 }
+
 // ----------------------------------------
 // CREATE YEAR DROPDOWN
 // ----------------------------------------
@@ -481,6 +584,10 @@ function formatGardenDate(dateString) {
 
 }
  
+// ----------------------------------------
+// SHOW GARDEN PLANT DETAILS
+// ----------------------------------------
+
 function showGardenPlantDetails(gardenPlantId) {
 
     const gardenPlants =
@@ -507,6 +614,7 @@ function showGardenPlantDetails(gardenPlantId) {
     }
 
 
+    // Find the original plant
     const userPlants =
         getUserPlants();
 
@@ -554,6 +662,112 @@ function showGardenPlantDetails(gardenPlantId) {
     }
 
 
+    // Get harvests for this specific planting
+    const allHarvests =
+        getHarvests();
+
+
+    const plantHarvests =
+        allHarvests.filter(function(harvest) {
+
+            return harvest.gardenPlantId === gardenPlantId;
+
+        });
+
+
+    // Build harvest HTML
+    let harvestHTML = '';
+
+
+    if (plantHarvests.length === 0) {
+
+        harvestHTML = `
+            <p>
+                No harvests recorded for this planting yet.
+            </p>
+        `;
+
+    } else {
+
+        harvestHTML = `
+
+            <div class="harvest-list">
+
+        `;
+
+
+        plantHarvests.forEach(function(harvest) {
+
+            let amount = '';
+
+
+            if (
+                harvest.quantity !== null &&
+                harvest.quantity !== undefined
+            ) {
+
+                amount +=
+                    `${harvest.quantity} ${
+                        harvest.quantity === 1
+                            ? 'item'
+                            : 'items'
+                    }`;
+
+            }
+
+
+            if (
+                harvest.weight !== null &&
+                harvest.weight !== undefined
+            ) {
+
+                if (amount) {
+                    amount += ' • ';
+                }
+
+                amount +=
+                    `${harvest.weight} ${harvest.weightUnit}`;
+
+            }
+
+
+            harvestHTML += `
+
+                <div class="harvest-item">
+
+                    <button
+                            class="harvest-date-button"
+                            onclick="showHarvestDetails('${harvest.id}')"
+                    >
+                        ${formatGardenDate(harvest.date)}
+                    </button>
+
+                    <br>
+
+                    ${amount}
+
+                    ${
+                        harvest.notes
+                            ? `<br>${harvest.notes}`
+                            : ''
+                    }
+
+                </div>
+
+            `;
+
+        });
+
+
+        harvestHTML += `
+
+            </div>
+
+        `;
+
+    }
+
+
     detailsContainer.innerHTML = `
 
         <div class="card">
@@ -567,7 +781,13 @@ function showGardenPlantDetails(gardenPlantId) {
 
             <p>
                 <strong>Planting Date:</strong>
-                ${gardenPlant.plantingDate || 'Not specified'}
+                ${
+                    gardenPlant.plantingDate
+                        ? formatGardenDate(
+                            gardenPlant.plantingDate
+                        )
+                        : 'Not specified'
+                }
             </p>
 
             <p>
@@ -607,9 +827,9 @@ function showGardenPlantDetails(gardenPlantId) {
 
             <h3>🧺 Harvest</h3>
 
-            <p>
-                Harvest tracking will be added here.
-            </p>
+            ${harvestHTML}
+
+            <br>
 
             <button
                 onclick="showAddHarvest('${gardenPlant.id}')"
@@ -625,6 +845,7 @@ function showGardenPlantDetails(gardenPlantId) {
     showPage('gardenPlantDetails');
 
 }
+
 // ----------------------------------------
 // EDIT GARDEN PLANTING
 // ----------------------------------------
