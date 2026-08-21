@@ -106,22 +106,32 @@ function displayHarvests() {
         }
 
 
-        // Add weight
-        if (
-            harvest.weight !== null &&
-            harvest.weight !== undefined &&
-            harvest.weight !== ''
-        ) {
+// Add weight
+if (
+    harvest.weight !== null &&
+    harvest.weight !== undefined &&
+    harvest.weight !== ''
+) {
 
-            plantTotals[plantId].weight +=
-                Number(harvest.weight);
+    let weight =
+        Number(harvest.weight);
 
-            plantTotals[plantId].hasWeight = true;
 
-            plantTotals[plantId].weightUnit =
-                harvest.weightUnit || 'lbs';
+    // Convert ounces to pounds
+    if (harvest.weightUnit === 'oz') {
 
-        }
+        weight =
+            weight / 16;
+
+    }
+
+
+    plantTotals[plantId].weight +=
+        weight;
+
+    plantTotals[plantId].hasWeight = true;
+
+}
 
     });
 
@@ -168,8 +178,8 @@ function displayHarvests() {
                 amount += ' • ';
             }
 
-            amount +=
-                `Lbs: ${totals.weight}`;
+amount +=
+    `Lbs: ${Math.round(totals.weight * 10) / 10}`;
 
         }
 
@@ -309,8 +319,21 @@ function showHarvestPlantDetails(plantId, year) {
             harvest.weight !== ''
         ) {
 
-            totalWeight +=
-                Number(harvest.weight);
+let weight =
+    Number(harvest.weight);
+
+
+// Convert ounces to pounds
+if (harvest.weightUnit === 'oz') {
+
+    weight =
+        weight / 16;
+
+}
+
+
+totalWeight +=
+    weight;
 
             hasWeight = true;
 
@@ -340,8 +363,8 @@ function showHarvestPlantDetails(plantId, year) {
             totalAmount += ' • ';
         }
 
-        totalAmount +=
-            `Lbs: ${totalWeight}`;
+totalAmount +=
+    `Lbs: ${Math.round(totalWeight * 10) / 10}`;
 
     }
 
