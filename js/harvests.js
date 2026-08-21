@@ -893,6 +893,30 @@ function showHarvestDetails(harvestId) {
     }
 
 
+    // Find the plant
+    const userPlants =
+        getUserPlants();
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === harvest.plantId;
+
+        });
+
+
+    const plantName =
+        plant
+            ? plant.name
+            : 'Unknown Plant';
+
+
     const detailsContainer =
         document.getElementById(
             'harvestDetailsContent'
@@ -910,6 +934,7 @@ function showHarvestDetails(harvestId) {
     }
 
 
+    // Build amount display
     let amount = '';
 
 
@@ -947,7 +972,9 @@ function showHarvestDetails(harvestId) {
 
         <div class="card">
 
-            <h2>🧺 Harvest</h2>
+            <h2>🌱 ${plantName}</h2>
+
+            <h3>🧺 Harvest</h3>
 
             <p>
                 <strong>Date:</strong>
