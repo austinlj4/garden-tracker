@@ -184,7 +184,15 @@ function displayHarvests() {
             ${amount}
 
         `;
+        
+harvestItem.onclick = function() {
 
+    showHarvestPlantDetails(
+        plantId,
+        selectedYear
+    );
+
+};
 
         container.appendChild(
             harvestItem
