@@ -114,7 +114,256 @@ function displayHarvests() {
 
     });
 
+// ----------------------------------------
+// SHOW HARVESTS FOR ONE PLANT
+// ----------------------------------------
 
+function showHarvestPlantDetails(plantId, year) {
+
+    const harvests =
+        getHarvests();
+
+
+    const yearHarvests =
+        harvests.filter(function(harvest) {
+
+            return (
+                harvest.plantId === plantId &&
+                harvest.gardenYear === year
+            );
+
+        });
+
+
+    const userPlants =
+        getUserPlants();
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === plantId;
+
+        });
+
+
+    if (!plant) {
+
+        console.error(
+            'Plant not found:',
+            plantId
+        );
+
+        return;
+
+    }
+
+
+    const detailsContainer =
+        document.getElementById(
+            'harvestPlantDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'harvestPlantDetailsContent not found.'
+        );
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // CALCULATE TOTALS
+    // ----------------------------------------
+
+    let totalQuantity = 0;
+
+    let totalWeight = 0;
+
+    let hasWeight = false;
+
+    let weightUnit = 'oz';
+
+
+    yearHarvests.forEach(function(harvest) {
+
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined
+        ) {
+
+            totalQuantity +=
+                Number(harvest.quantity);
+
+        }
+
+
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined
+        ) {
+
+            totalWeight +=
+                Number(harvest.weight);
+
+            hasWeight = true;
+
+            weightUnit =
+                harvest.weightUnit || 'oz';
+
+        }
+
+    });
+
+
+    // ----------------------------------------
+    // BUILD TOTAL DISPLAY
+    // ----------------------------------------
+
+    let totalAmount = '';
+
+
+    if (totalQuantity > 0) {
+
+        totalAmount =
+            `${totalQuantity} ${
+                totalQuantity === 1
+                    ? 'item'
+                    : 'items'
+            }`;
+
+    }
+
+
+    if (hasWeight) {
+
+        if (totalAmount) {
+            totalAmount += ' • ';
+        }
+
+        totalAmount +=
+            `${totalWeight} ${weightUnit}`;
+
+    }
+
+
+    // ----------------------------------------
+    // BUILD HARVEST LIST
+    // ----------------------------------------
+
+    let harvestList = '';
+
+
+    yearHarvests.forEach(function(harvest) {
+
+        let amount = '';
+
+
+        if (
+            harvest.quantity !== null &&
+            harvest.quantity !== undefined
+        ) {
+
+            amount +=
+                `${harvest.quantity} ${
+                    harvest.quantity === 1
+                        ? 'item'
+                        : 'items'
+                }`;
+
+        }
+
+
+        if (
+            harvest.weight !== null &&
+            harvest.weight !== undefined
+        ) {
+
+            if (amount) {
+                amount += ' • ';
+            }
+
+            amount +=
+                `${harvest.weight} ${harvest.weightUnit}`;
+
+        }
+
+
+        harvestList += `
+
+            <div
+                class="garden-plant-item"
+                onclick="showHarvestDetails('${harvest.id}')"
+            >
+
+                <strong>
+                    ${formatGardenDate(harvest.date)}
+                </strong>
+
+                <br>
+
+                ${amount}
+
+                ${
+                    harvest.notes
+                        ? `<br><small>${harvest.notes}</small>`
+                        : ''
+                }
+
+            </div>
+
+        `;
+
+    });
+
+
+    // ----------------------------------------
+    // DISPLAY PAGE
+    // ----------------------------------------
+
+    detailsContainer.innerHTML = `
+
+        <div class="card">
+
+            <h2>🧺 ${plant.name}</h2>
+
+            <h3>
+                ${year} Harvest Total
+            </h3>
+
+            <p>
+                <strong>
+                    ${totalAmount || 'No harvest recorded'}
+                </strong>
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Individual Harvests</h3>
+
+            ${harvestList}
+
+        </div>
+
+    `;
+
+
+    showPage('harvestPlantDetails');
+
+}
+    
     // ----------------------------------------
     // DISPLAY TOTALS
     // ----------------------------------------
