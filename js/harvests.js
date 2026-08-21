@@ -114,72 +114,6 @@ function displayHarvests() {
 
     });
 
-// ----------------------------------------
-// SHOW HARVESTS FOR ONE PLANT
-// ----------------------------------------
-
-function showHarvestPlantDetails(plantId, year) {
-
-    const harvests =
-        getHarvests();
-
-
-    const yearHarvests =
-        harvests.filter(function(harvest) {
-
-            return (
-                harvest.plantId === plantId &&
-                harvest.gardenYear === year
-            );
-
-        });
-
-
-    const userPlants =
-        getUserPlants();
-
-    const allPlants = [
-        ...plantLibrary,
-        ...userPlants
-    ];
-
-
-    const plant =
-        allPlants.find(function(item) {
-
-            return item.id === plantId;
-
-        });
-
-
-    if (!plant) {
-
-        console.error(
-            'Plant not found:',
-            plantId
-        );
-
-        return;
-
-    }
-
-
-    const detailsContainer =
-        document.getElementById(
-            'harvestPlantDetailsContent'
-        );
-
-
-    if (!detailsContainer) {
-
-        console.error(
-            'harvestPlantDetailsContent not found.'
-        );
-
-        return;
-
-    }
-
 
     // ----------------------------------------
     // CALCULATE TOTALS
@@ -390,30 +324,26 @@ function showHarvestPlantDetails(plantId, year) {
         let amount = '';
 
 
-        // Quantity total
-        if (totals.quantity > 0) {
+// Quantity total
+if (totals.quantity > 0) {
 
-            amount +=
-                `${totals.quantity} ${
-                    totals.quantity === 1
-                        ? 'item'
-                        : 'items'
-                }`;
+    amount +=
+        `Qty: ${totals.quantity}`;
 
-        }
+}
 
 
-        // Weight total
-        if (totals.hasWeight) {
+// Weight total
+if (totals.hasWeight) {
 
-            if (amount) {
-                amount += ' • ';
-            }
+    if (amount) {
+        amount += ' • ';
+    }
 
-            amount +=
-                `${totals.weight} ${totals.weightUnit}`;
+    amount +=
+        `Lbs: ${totals.weight}`;
 
-        }
+}
 
 
         const harvestItem =
@@ -450,6 +380,71 @@ harvestItem.onclick = function() {
     });
 
 }
+// ----------------------------------------
+// SHOW HARVESTS FOR ONE PLANT
+// ----------------------------------------
+
+function showHarvestPlantDetails(plantId, year) {
+
+    const harvests =
+        getHarvests();
+
+
+    const yearHarvests =
+        harvests.filter(function(harvest) {
+
+            return (
+                harvest.plantId === plantId &&
+                harvest.gardenYear === year
+            );
+
+        });
+
+
+    const userPlants =
+        getUserPlants();
+
+    const allPlants = [
+        ...plantLibrary,
+        ...userPlants
+    ];
+
+
+    const plant =
+        allPlants.find(function(item) {
+
+            return item.id === plantId;
+
+        });
+
+
+    if (!plant) {
+
+        console.error(
+            'Plant not found:',
+            plantId
+        );
+
+        return;
+
+    }
+
+
+    const detailsContainer =
+        document.getElementById(
+            'harvestPlantDetailsContent'
+        );
+
+
+    if (!detailsContainer) {
+
+        console.error(
+            'harvestPlantDetailsContent not found.'
+        );
+
+        return;
+
+    }
 // ----------------------------------------
 // SHOW ADD HARVEST FORM
 // ----------------------------------------
